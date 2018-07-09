@@ -1,10 +1,8 @@
-# certbot-letencrypt-wildcardcertificates-alydns-au
-
 ### 功能
 
 为不能自动给自己的 letencrypt 通配符证书自动续期（renew）而烦恼吗？这个工具能够帮忙！
 
-用于自动设置阿里云 DNS 记录，从而配合 certbot 完成证书验证工作（包括通配符、SAN、单域名证书），从而避免人工干预。
+自动设置阿里云 DNS 记录，从而配合 certbot 完成证书验证工作（包括通配符、SAN、单域名证书），避免人工干预，可一步完成证书申请、rennew 操作。
 
 ### 使用方法
 
@@ -27,7 +25,7 @@ $ cd certbot-letencrypt-wildcardcertificates-alydns-au
 # 测试
 $ certbot-auto renew --cert-name newyingyong.cn --manual-auth-hook /你的脚本目录/au.sh --dry-run
 
-#renew
+# 实际 renew
 $ certbot-auto renew --cert-name newyingyong.cn --manual-auth-hook /你的脚本目录/au.sh 
 ```
 
