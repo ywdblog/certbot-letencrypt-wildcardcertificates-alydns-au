@@ -46,7 +46,7 @@ $data = $obj->DescribeDomainRecords();
 $data = $data["DomainRecords"]["Record"];
 if (is_array($data)) {
       foreach ($data as $v) {
-           if ($v["RR"] == $argv[3]) {
+           if ($v["RR"] == $argv[2]) {
                $obj->DeleteDomainRecord($v["RecordId"]);
            }
       }
