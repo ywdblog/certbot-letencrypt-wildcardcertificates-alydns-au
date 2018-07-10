@@ -4,7 +4,7 @@
 
 自动设置阿里云 DNS 记录，从而配合 certbot 完成证书验证工作（包括通配符、SAN、单域名证书），避免人工干预，可一步完成证书申请、rennew 操作。
 
-### 使用方法
+### renew 方法
 
 1：下载：
 
@@ -31,6 +31,6 @@ $ certbot-auto renew --cert-name newyingyong.cn --manual-auth-hook /你的脚本
 
 ### 其他
 
-- 如果想了解详细的信息，查看[不会自动为Let’s Encrypt通配符证书续期？我写了个小工具](https://mp.weixin.qq.com/s?__biz=MzAwOTU4NzM5Ng==&tempkey=OTY0X3E5REVlb1IwRWhxMWFNS2xKZnJBOXVJdF9GTDV0c21TdWFFNWpFbnlwV2F5enRKZERjLWNQbDlkaTVaaVdmQU52ajRGVkE4NXVGaWoxSmNITWpKMGtqLXQ1TmpiVG9ZWllTYnd5Rm9WU3Q5SFNiQVdFVHlRWVRrNm1MV3k5dlRoM3FJZndoa2h1cENkS2l1STR2U2tfTHRscFByWVRxcnpnY1hLMVF%2Bfg%3D%3D)
+- 如果想了解详细的信息，查看[不会自动为Let’s Encrypt通配符证书续期？我写了个小工具](https://mp.weixin.qq.com/s/aTjl79NsE6WkS47RGlX_gg)
 - 可以关注公众号（虞大胆的叽叽喳喳，yudadanwx），了解更多密码学&HTTPS协议知识
 
