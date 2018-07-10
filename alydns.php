@@ -34,11 +34,10 @@ define("accessSecrec", "");
 /*
 example:
 
-php alydns.php add "newyingyong.cn" "test" "test2" 
-php alydns.php del "newyingyong.cn" "test"  
+php alydns.php  "newyingyong.cn" "test" "test2" 
 */
 
-//add or del
+
 $type = $argv[1];
 //manager domain 
 $obj = new AliDns(accessKeyId, accessSecrec, $argv[2]);
