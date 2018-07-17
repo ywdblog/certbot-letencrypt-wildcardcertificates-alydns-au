@@ -6,6 +6,7 @@ date_default_timezone_set("GMT");
 define("accessKeyId", "");
 define("accessSecrec", "");
 
+
 /*
 //$obj = new AliDns(accessKeyId, accessSecrec, "newyingyong.cn");
 
@@ -34,14 +35,14 @@ define("accessSecrec", "");
 /*
 example:
 
-php alydns.php add "newyingyong.cn" "test" "test2" 
-php alydns.php del "newyingyong.cn" "test"  
+php alydns.php  "newyingyong.cn" "test" "test2" 
 */
 
-//add or del
-$type = $argv[1];
-//manager domain 
-$obj = new AliDns(accessKeyId, accessSecrec, $argv[2]);
+########## 配合 cerbot 运行 
+
+echo $argv[1] . "-" . $argv[2] . "-" . $argv[3];
+
+$obj = new AliDns(accessKeyId, accessSecrec, $argv[1]);
 $data = $obj->DescribeDomainRecords();
 $data = $data["DomainRecords"]["Record"];
 if (is_array($data)) {
@@ -52,7 +53,9 @@ if (is_array($data)) {
       }
 } 
 
-print_r($obj->AddDomainRecord("TXT", $argv[3],$argv[4]));
+print_r($obj->AddDomainRecord("TXT", $argv[2],$argv[3]));
+
+############ Class 定义
 
 class AliDns {
     private $accessKeyId = null;
