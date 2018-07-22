@@ -23,7 +23,7 @@ $ chmod 0777 au.sh
 
 2：配置
 
-- alydns.php，修改 accessKeyId、accessSecrec 变量，需要去阿里云申请 API key 和 Secrec (如何申请？参考 https://help.aliyun.com/knowledge_detail/38738.html)，用于调用阿里云 DNS API。
+- alydns.php，修改 accessKeyId、accessSecrec 变量，需要去阿里云申请 API key 和 Secrec (如何申请？参考官方文档，[点击访问](https://help.aliyun.com/knowledge_detail/38738.html)），用于调用阿里云 DNS API。
 
 3：申请证书
 
@@ -73,4 +73,8 @@ $ ./certbot-auto certificates
 - 如果想了解详细的信息，查看[不会自动为Let’s Encrypt通配符证书续期？我写了个小工具](https://mp.weixin.qq.com/s/aTjl79NsE6WkS47RGlX_gg)。
 - 可以关注公众号（虞大胆的叽叽喳喳，yudadanwx），了解更多密码学&HTTPS协议知识
 - 我写了一本书《深入浅出HTTPS：从原理到实战》，可以[查看](https://mp.weixin.qq.com/s/80oQhzmP9BTimoReo1oMeQ)了解更多关于HTTPS方面的知识。
+ 
+公众号二维码：
+
+![公众号：虞大胆的叽叽喳喳，yudadanwx](http://notes.newyingyong.cn/static/image/wxgzh/qrcode_for_gh_27a6d90762d3_258.jpg)
  
