@@ -4,9 +4,9 @@
 
 不管是申请或者续期，只要是通配符证书，只能采用 dns-01 的方式校验申请者的域名，也就是说操作者（运行 certbot 客户端的人）必须手动添加 DNS TXT 记录。
 
-如果你编写一个脚本，自动 renew 通配符证书，此时脚本无法自动添加 TXT 记录，这样 renew 操作就会失败，如何解决？
+如果你编写一个 Cron (比如 certbot-auto renew)，自动 renew 通配符证书，此时 Cron 无法自动添加 TXT 记录，这样 renew 操作就会失败，如何解决？
 
-certbot 提供了一个 hook，可以编写一个脚本，让程序调用 DNS 服务商的 API 接口，动态的添加 TXT 记录，这样就无需人工干预了。
+certbot 提供了一个 hook，可以编写一个 Shell 脚本（Cron 运行），让脚本调用 DNS 服务商的 API 接口，动态的添加 TXT 记录，这样就无需人工干预了。
 
 在 certbot 官方提供的插件和 hook 例子中，都没有针对国内 DNS 服务器的样例，所以我编写了这样一个工具，目前主要是动态配置阿里云 DNS 记录。 
 
@@ -23,8 +23,7 @@ $ chmod 0777 au.sh
 
 2：配置
 
-- au.sh，修改 PHPPROGRAM（au.sh 脚本的目录）、DOMAIN（你的域名）。
-- alydns.php，修改 accessKeyId、accessSecrec，需要去阿里云申请 API key 和 Secrec，用于调用阿里云 DNS API。
+- alydns.php，修改 accessKeyId、accessSecrec 变量，需要去阿里云申请 API key 和 Secrec (如何申请？参考 https://help.aliyun.com/knowledge_detail/38738.html)，用于调用阿里云 DNS API。
 
 3：申请证书
 
@@ -34,7 +33,7 @@ $ chmod 0777 au.sh
 ./certbot-auto certonly  -d *.example.com --manual --preferred-challenges dns  --manual-auth-hook /脚本目录/au.sh  --dry-run  
 
 # 实际申请
-$ certbot-auto renew --cert-name newyingyong.cn --manual-auth-hook /你的脚本目录/au.sh 
+./certbot-auto certonly  -d *.example.com --manual --preferred-challenges dns  --manual-auth-hook /脚本目录/au.sh    
 ```
 
 如果你想为多个域名申请通配符证书（合并在一张证书中，也叫做 **SAN 通配符证书**），直接输入多个 -d 参数即可，比如：
