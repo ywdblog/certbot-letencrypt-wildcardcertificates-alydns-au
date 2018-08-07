@@ -10,7 +10,7 @@ echo $PATH"/alydns.php"
 # 第二个参数：需要为具体那个 RR 设置
 # 第三个参数: letsencrypt 动态传递的 RR 值 
 
-echo $CRETBOT_DOMAIN"_acme-challenge"$CERTBOT_VALIDATION
+echo $CERTBOT_DOMAIN"_acme-challenge"$CERTBOT_VALIDATION
 
 /usr/bin/php  $PATH"/alydns.php"  $CERTBOT_DOMAIN "_acme-challenge"  $CERTBOT_VALIDATION >"/var/log/certdebug.log"
 
