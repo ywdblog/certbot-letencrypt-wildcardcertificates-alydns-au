@@ -13,8 +13,8 @@ from urllib import request
 from sys import argv
 
 
-ACCESS_KEY_ID = 'LTAIFeVKx2zElw76'
-ACCESS_KEY_SECRET = 'L7wjwnNjIJSALf36KA36ubkbmiWUcv'
+ACCESS_KEY_ID = '阿里云 access_key_id'
+ACCESS_KEY_SECRET = '阿里云 access_key_secret'
 
 
 class AliDns:
