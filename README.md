@@ -22,6 +22,7 @@ certbot 提供了一个 hook，可以编写一个 Shell 脚本（Cron 运行）�
 $ git clone https://github.com/ywdblog/certbot-letencrypt-wildcardcertificates-alydns-au
 
 $ cd certbot-letencrypt-wildcardcertificates-alydns-au
+
 $ chmod 0777 au.sh 
 ```
 
@@ -33,17 +34,16 @@ $ chmod 0777 au.sh
 
 ```
 # 测试是否有错误
-
-./certbot-auto certonly  -d *.example.com --manual --preferred-challenges dns  --manual-auth-hook /脚本目录/au.sh  --dry-run  
+$ ./certbot-auto certonly  -d *.example.com --manual --preferred-challenges dns  --manual-auth-hook /脚本目录/au.sh  --dry-run  
 
 # 实际申请
-./certbot-auto certonly  -d *.example.com --manual --preferred-challenges dns  --manual-auth-hook /脚本目录/au.sh    
+$ ./certbot-auto certonly  -d *.example.com --manual --preferred-challenges dns  --manual-auth-hook /脚本目录/au.sh    
 ```
 
 如果你想为多个域名申请通配符证书（合并在一张证书中，也叫做 **SAN 通配符证书**），直接输入多个 -d 参数即可，比如：
 
 ```
-./certbot-auto certonly  -d *.example.com -d *.example.org  --manual --preferred-challenges dns  --manual-auth-hook /脚本目录/au.sh  --dry-run  
+$ ./certbot-auto certonly  -d *.example.com -d *.example.org  --manual --preferred-challenges dns  --manual-auth-hook /脚本目录/au.sh  --dry-run  
 ```
 
 ### 续期证书
@@ -51,7 +51,7 @@ $ chmod 0777 au.sh
 1：对机器上所有证书 renew
 
 ```
-./certbot-auto renew  --manual --preferred-challenges dns  --manual-auth-hook /脚本目录/au.sh   
+$ ./certbot-auto renew  --manual --preferred-challenges dns  --manual-auth-hook /脚本目录/au.sh   
 ```
 
 2：对某一张证书进行续期
@@ -69,12 +69,11 @@ $ ./certbot-auto certificates
 记住证书名，比如 simplehttps.com，然后运行下列命令 renew：
 
 ```
-./certbot-auto renew --cert-name simplehttps.com  --manual-auth-hook /脚本目录/au.sh 
+$ ./certbot-auto renew --cert-name simplehttps.com  --manual-auth-hook /脚本目录/au.sh 
 ```
  
 ### 其他
 
-- 如果想了解详细的信息，查看[不会自动为Let’s Encrypt通配符证书续期？我写了个小工具](https://mp.weixin.qq.com/s/aTjl79NsE6WkS47RGlX_gg)。
 - 可以关注公众号（虞大胆的叽叽喳喳，yudadanwx），了解更多密码学&HTTPS协议知识
 - 我写了一本书《深入浅出HTTPS：从原理到实战》，可以[查看](https://mp.weixin.qq.com/s/80oQhzmP9BTimoReo1oMeQ)了解更多关于HTTPS方面的知识。
  
