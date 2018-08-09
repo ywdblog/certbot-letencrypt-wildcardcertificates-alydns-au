@@ -10,6 +10,10 @@ certbot 提供了一个 hook，可以编写一个 Shell 脚本（Cron 运行）�
 
 在 certbot 官方提供的插件和 hook 例子中，都没有针对国内 DNS 服务器的样例，所以我编写了这样一个工具，目前主要是动态配置阿里云 DNS 记录。 
 
+**重要更新：**
+
+下面介绍的是基于 PHP+Shell 版本，如果你没有 PHP 环境，可以使用 Python+Shell 版本，感谢 @Duke-Wu 的 PR，具体使用见[README-Python.md](README-Python.md) 
+
 ### 自动申请通配符证书
 
 1：下载
