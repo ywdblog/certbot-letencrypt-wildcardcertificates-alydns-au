@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# 阿里云操作 DNS Hook
+# 腾讯云操作 DNS Hook
 
 PATH=$(cd `dirname $0`; pwd)
 
@@ -13,7 +13,7 @@ echo $PATH"/alydns.php"
 
 echo $CERTBOT_DOMAIN"_acme-challenge"$CERTBOT_VALIDATION
 
-/usr/bin/php  $PATH"/alydns.php"  $CERTBOT_DOMAIN "_acme-challenge"  $CERTBOT_VALIDATION >"/var/log/certdebug.log"
+/usr/bin/php  $PATH"/txydns.php"  $CERTBOT_DOMAIN "_acme-challenge"  $CERTBOT_VALIDATION >"/var/log/certdebug.log"
 
 # DNS TXT 记录刷新时间
 /bin/sleep 20
