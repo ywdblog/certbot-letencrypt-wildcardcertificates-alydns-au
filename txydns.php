@@ -4,8 +4,8 @@ date_default_timezone_set("GMT");
 
 ############ 请在腾讯云申请“API密钥”，替换下面两个常量
 //去 https://console.cloud.tencent.com/cam/capi 页面申请 
-define("txyaccessKeyId", "AKIDwlPr7DUpLgpZBb4tlT0MWUHtIVXOJwxm");
-define("txyaccessSecrec", "mMkxzoTxOirrfJlFYfbS7g7792jEi5GG");
+define("txyaccessKeyId", "");
+define("txyaccessSecrec", "");
 
 ######### 类测试
 
