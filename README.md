@@ -4,15 +4,11 @@
 
 不管是申请还是续期，只要是通配符证书，只能采用 dns-01 的方式校验申请者的域名，也就是说 certbot 操作者必须手动添加 DNS TXT 记录。
 
-如果你编写一个 Cron (比如 1 1 */1 * * rootcertbot-auto renew)，自动 renew 通配符证书，此时 Cron 无法自动添加 TXT 记录，这样 renew 操作就会失败，如何解决？
+如果你编写一个 Cron (比如 1 1 */1 * * root certbot-auto renew)，自动 renew 通配符证书，此时 Cron 无法自动添加 TXT 记录，这样 renew 操作就会失败，如何解决？
  
 certbot 提供了一个 hook，可以编写一个 Shell 脚本，让脚本调用 DNS 服务商的 API 接口，动态添加 TXT 记录，这样就无需人工干预了。
 
 在 certbot 官方提供的插件和 hook 例子中，都没有针对国内 DNS 服务器的样例，所以我编写了这样一个工具，目前支持阿里云 DNS 和腾讯云 DNS。 
-
-**重要更新：**
-
-下面介绍的是基于 PHP+Shell 版本，如果你没有 PHP 环境，可以使用 Python+Shell 版本，感谢 @Duke-Wu 的 PR，具体使用见[README-Python.md](README-Python.md) 
 
 ### 自动申请通配符证书
 
@@ -32,9 +28,9 @@ $ chmod 0777 au.sh autxy.sh python-version/alydns27.py
 
 - au.sh：操作阿里云 DNS hook shell（PHP 环境）。
 - autxy.sh：操作腾讯云 DNS hook shell（PHP 环境），**最近新增**。
-- python-version/alydns27.py：操作阿里云 DNS hook shell（Python 2.7 环境）,@Duke-Wu 的 PR。
+- python-version/alydns27.py：操作阿里云 DNS hook shell（Python 2.7 环境）,感谢 @Duke-Wu 的 PR。
 
-这三种运行环境什么意思呢？就是用户可以根据自己服务器环境和域名服务商选择任意一个 hook shell（操作的时候选择其一即可）。
+这三种运行环境什么意思呢？就是可根据自己服务器环境和域名服务商选择任意一个 hook shell（操作的时候任选其一即可）。
 
 DNS API 密钥：
 
@@ -46,7 +42,7 @@ DNS API 密钥：
 
 3：申请证书
 
-**特别说明：** --manual-auth-hook 指定的 hook 文件三个任选其一（au.sh、autxy.sh、python-version/27.py），其他操作没有任何区别。
+**特别说明：** --manual-auth-hook 指定的 hook 文件三个任选其一（au.sh、autxy.sh、python-version/27.py），其他操作完全相同。
 
 ```
 # 测试是否有错误
@@ -87,7 +83,15 @@ $ ./certbot-auto certificates
 ```
 $ ./certbot-auto renew --cert-name simplehttps.com  --manual-auth-hook /脚本目录/au.sh 
 ```
- 
+
+### 加入 crontab 
+
+编辑文件 /etc/crontab :
+
+```
+1 1 */1 * * root certbot-auto renew --manual --preferred-challenges dns  --manual-auth-hook /脚本目录/au.sh 
+```
+
 ### 其他
 
 - 可以关注公众号（虞大胆的叽叽喳喳，yudadanwx），了解更多密码学&HTTPS协议知识。
