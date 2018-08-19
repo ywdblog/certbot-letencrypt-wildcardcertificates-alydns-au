@@ -19,7 +19,7 @@ $ git clone https://github.com/ywdblog/certbot-letencrypt-wildcardcertificates-a
 
 $ cd certbot-letencrypt-wildcardcertificates-alydns-au
 
-$ chmod 0777 au.sh autxy.sh python-version/alydns27.py 
+$ chmod 0777 au.sh autxy.sh python-version/au.sh
 ```
 
 2：配置
@@ -42,7 +42,7 @@ DNS API 密钥：
 
 3：申请证书
 
-**特别说明：** --manual-auth-hook 指定的 hook 文件三个任选其一（au.sh、autxy.sh、python-version/27.py），其他操作完全相同。
+**特别说明：** --manual-auth-hook 指定的 hook 文件三个任选其一（au.sh、autxy.sh、python-version/au.sh），其他操作完全相同。
 
 ```
 # 测试是否有错误
