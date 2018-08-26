@@ -8,16 +8,17 @@ define("txyaccessKeyId", "");
 define("txyaccessSecrec", "");
 
 ######### 类测试
-
 /*
   $obj = new TxyDns(txyaccessKeyId, txyaccessSecrec, "yudadan.com");
   //显示所有域名
   //$obj->DomainList();
   //添加域名 TXT 记录
-  //$obj->RecordCreate("www3","TXT","s");
+  $obj->RecordCreate("www3","TXT","s");
   //显示某个域名所有的 TXT 记录
-  //$obj->RecordList("www3","TXT");
- */
+  $data = $obj->RecordList("www3","TXT");
+
+*/
+
 
 ###### 代码运行
 // php txydns.php  "simplehttps.com" "txtname" "txtvalue"  
@@ -25,17 +26,19 @@ define("txyaccessSecrec", "");
 //$argv[2] = "www3";
 //$argv[3] = "ssssss";
 
-$obj = new TxyDns(txyaccessKeyId, txyaccessSecrec, $argv[1]);
-$data = $obj->RecordList($argv[2], "TXT");
-if ($data["code"] != "0") {
-    $obj->error($data["code"], $data["message"]);
-}
+$domainarray = TxyDns::getDomain($argv[1]);
+$selfdomain = ($domainarray[0]=="")?$argv[2]:$argv[2] . "." . $domainarray[0];
 
+$obj = new TxyDns(txyaccessKeyId, txyaccessSecrec, $domainarray[1]);
+$data = $obj->RecordList($selfdomain , "TXT");
+if ($data["code"] != "0") {
+	$obj->error($data["code"], $data["message"]);
+}
 $records = $data["data"]["records"];
 foreach ($records as $k => $v) {
     // 如果存在记录，则直接修改。
-    if ($v["name"] == $argv[2]) {
-        $data = $obj->RecordModify($argv[2], "TXT", $argv[3], $v["id"]);
+    if ($v["name"] == $selfdomain) {
+        $data = $obj->RecordModify($selfdomain, "TXT", $argv[3], $v["id"]);
         if ($data["code"] != "0") {
             $obj->error($data["code"], $data["message"]);
         }
@@ -64,6 +67,49 @@ class TxyDns {
         $this->accessKeyId = $accessKeyId;
         $this->accessSecrec = $accessSecrec;
         $this->DomainName = $domain;
+    }
+    
+    /*
+	根据域名返回主机名和二级域名
+    */
+    public static function getDomain($domain) {
+	
+	//常见根域名
+	$arr[]=".co.jp";
+	$arr[]=".com.tw";
+	$arr[]=".net";
+	$arr[]=".com";
+	$arr[]=".com.cn";
+	$arr[]=".org";
+	$arr[]=".cn";
+	$arr[]=".gov";
+	$arr[]=".net.cn";
+	$arr[]=".io";
+
+	//二级域名
+	$seconddomain ="";
+	//子域名
+	$selfdomain = "";
+	//根域名
+	$rootdomain = "";
+	foreach ($arr as $k=>$v) {
+        	$pos = stripos($domain,$v);
+        	if ($pos) {
+                	$rootdomain = substr($domain,$pos);
+                	$s = explode(".",substr($domain,0,$pos));
+                	$seconddomain =  $s[count($s)-1] . $rootdomain;
+                	for ($i=0;$i<count($s)-1;$i++)
+                        	$selfdomain .= $s[$i];
+                	break;
+        	}	
+	}
+	//echo $seconddomain ;exit;
+	if ($rootdomain=="") {
+        	$seconddomain = $domain;
+        	$selfdomain = "";
+	}
+	return array($selfdomain,$seconddomain);
+
     }
 
     public function error($code, $str) {
