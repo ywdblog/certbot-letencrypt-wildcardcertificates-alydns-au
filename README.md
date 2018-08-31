@@ -27,7 +27,7 @@ $ chmod 0777 au.sh autxy.sh python-version/au.sh
 目前该工具支持三种运行环境：
 
 - au.sh：操作阿里云 DNS hook shell（PHP 环境）。
-- autxy.sh：操作腾讯云 DNS hook shell（PHP 环境），**最近新增**。
+- autxy.sh：操作腾讯云 DNS hook shell（PHP 环境）。
 - python-version/au.py：操作阿里云 DNS hook shell（Python 2.7/3.6）,感谢 @Duke-Wu 的 PR。
 
 这三种运行环境什么意思呢？就是可根据自己服务器环境和域名服务商选择任意一个 hook shell（操作的时候任选其一即可）。

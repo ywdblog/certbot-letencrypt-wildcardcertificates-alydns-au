@@ -6,7 +6,6 @@ date_default_timezone_set("GMT");
 define("accessKeyId", "");
 define("accessSecrec", "");
 
-
 /*
 //$obj = new AliDns(accessKeyId, accessSecrec, "newyingyong.cn");
 
@@ -35,25 +34,28 @@ define("accessSecrec", "");
 /*
 example:
 
-php alydns.php  "newyingyong.cn" "test" "test2" 
+php alydns.php  "simplehttps.com" "test" "test2" 
 */
 
 ########## 配合 cerbot 运行 
 
 echo $argv[1] . "-" . $argv[2] . "-" . $argv[3];
 
-$obj = new AliDns(accessKeyId, accessSecrec, $argv[1]);
+$domainarray = AliDns::getDomain($argv[1]);
+$selfdomain = ($domainarray[0]=="")?$argv[2]:$argv[2] . "." . $domainarray[0];
+
+$obj = new AliDns(accessKeyId, accessSecrec, $domainarray[1]);
 $data = $obj->DescribeDomainRecords();
 $data = $data["DomainRecords"]["Record"];
 if (is_array($data)) {
       foreach ($data as $v) {
-           if ($v["RR"] == $argv[2]) {
-               $obj->DeleteDomainRecord($v["RecordId"]);
+           if ($v["RR"] == $selfdomain) {
+               $res = $obj->DeleteDomainRecord($v["RecordId"]);
            }
       }
 } 
 
-print_r($obj->AddDomainRecord("TXT", $argv[2],$argv[3]));
+$res = $obj->AddDomainRecord("TXT", $selfdomain,$argv[3]);
 
 ############ Class 定义
 
@@ -67,6 +69,48 @@ class AliDns {
         $this->accessKeyId = $accessKeyId;
         $this->accessSecrec = $accessSecrec;
         $this->DomainName = $domain;
+    }
+    /*
+	根据域名返回主机名和二级域名
+    */
+    public static function getDomain($domain) {
+	
+    	//常见根域名
+    	$arr[]=".co.jp";
+    	$arr[]=".com.tw";
+    	$arr[]=".net";
+    	$arr[]=".com";
+    	$arr[]=".com.cn";
+    	$arr[]=".org";
+    	$arr[]=".cn";
+    	$arr[]=".gov";
+    	$arr[]=".net.cn";
+    	$arr[]=".io";
+
+    	//二级域名
+    	$seconddomain ="";
+    	//子域名
+    	$selfdomain = "";
+    	//根域名
+    	$rootdomain = "";
+    	foreach ($arr as $k=>$v) {
+        	$pos = stripos($domain,$v);
+        	if ($pos) {
+            	$rootdomain = substr($domain,$pos);
+            	$s = explode(".",substr($domain,0,$pos));
+            	$seconddomain =  $s[count($s)-1] . $rootdomain;
+            	for ($i=0;$i<count($s)-1;$i++)
+                    	$selfdomain .= $s[$i];
+            	break;
+        	}	
+    	}
+    	//echo $seconddomain ;exit;
+    	if ($rootdomain=="") {
+        	$seconddomain = $domain;
+        	$selfdomain = "";
+    	}
+    	return array($selfdomain,$seconddomain);
+
     }
 
     public function DescribeDomainRecords() {
