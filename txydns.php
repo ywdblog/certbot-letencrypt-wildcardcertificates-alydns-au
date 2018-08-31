@@ -29,6 +29,7 @@ define("txyaccessSecrec", "");
 $domainarray = TxyDns::getDomain($argv[1]);
 $selfdomain = ($domainarray[0]=="")?$argv[2]:$argv[2] . "." . $domainarray[0];
 
+//为了匹配出二级域名，以及正确的RR
 $obj = new TxyDns(txyaccessKeyId, txyaccessSecrec, $domainarray[1]);
 $data = $obj->RecordList($selfdomain , "TXT");
 if ($data["code"] != "0") {
@@ -47,7 +48,7 @@ foreach ($records as $k => $v) {
     }
 }
 //如果不存在，就增加 TXT 记录
-$data = $obj->RecordCreate($argv[2], "TXT", $argv[3]);
+$data = $obj->RecordCreate($selfdomain, "TXT", $argv[3]);
 if ($data["code"] != "0") {
     //失败，则记录日志
     $obj->error($data["code"], $data["message"]);
@@ -74,17 +75,24 @@ class TxyDns {
     */
     public static function getDomain($domain) {
 	
-	//常见根域名
-	$arr[]=".co.jp";
-	$arr[]=".com.tw";
+	//常见根域名 【https://en.wikipedia.org/wiki/List_of_Internet_top-level_domains】
+    // 【http://www.seobythesea.com/2006/01/googles-most-popular-and-least-popular-top-level-domains/】
+	
+    $arr[]=".uk";
+    $arr[]=".hk";
 	$arr[]=".net";
 	$arr[]=".com";
+    $arr[]=".edu";
+    $arr[]=".mil";
 	$arr[]=".com.cn";
 	$arr[]=".org";
 	$arr[]=".cn";
 	$arr[]=".gov";
 	$arr[]=".net.cn";
 	$arr[]=".io";
+    $arr[]=".co.jp";
+    $arr[]=".com.tw";
+    $arr[]=".info";
 
 	//二级域名
 	$seconddomain ="";
