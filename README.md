@@ -99,9 +99,9 @@ $ ./certbot-auto renew --cert-name simplehttps.com  --manual-auth-hook /脚本�
  
 公众号二维码：
 
-![公众号：虞大胆的叽叽喳喳，yudadanwx](http://notes.newyingyong.cn/static/image/wxgzh/qrcode_for_gh_27a6d90762d3_258.jpg)
+![公众号：虞大胆的叽叽喳喳，yudadanwx](https://notes.newyingyong.cn/static/image/wxgzh/qrcode_258.jpg)
 
 《深入浅出HTTPS：从原理到实战》二维码：
 
-![深入浅出HTTPS：从原理到实战](http://notes.newyingyong.cn/static/image/httpsbook/httpsbook-mini.jpg)
+![深入浅出HTTPS：从原理到实战](https://notes.newyingyong.cn/static/image/httpsbook/httpsbook-small-jd.jpg)
  
