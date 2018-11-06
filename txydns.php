@@ -93,7 +93,11 @@ class TxyDns {
     $arr[]=".co.jp";
     $arr[]=".com.tw";
     $arr[]=".info";
-
+        $arr[]=".io";
+        $arr[]=".top";
+        $arr[]=".me";
+        $arr[]=".int";
+        $arr[]=".edu";
 	//二级域名
 	$seconddomain ="";
 	//子域名

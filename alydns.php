@@ -75,6 +75,7 @@ class AliDns {
     */
     public static function getDomain($domain) {
 	
+	//https://en.wikipedia.org/wiki/List_of_Internet_top-level_domains	
     	//常见根域名
     	$arr[]=".co.jp";
     	$arr[]=".com.tw";
@@ -86,6 +87,10 @@ class AliDns {
     	$arr[]=".gov";
     	$arr[]=".net.cn";
     	$arr[]=".io";
+    	$arr[]=".top";
+    	$arr[]=".me";
+    	$arr[]=".int";
+    	$arr[]=".edu";
 
     	//二级域名
     	$seconddomain ="";
