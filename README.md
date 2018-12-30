@@ -28,7 +28,7 @@ $ chmod 0777 au.sh autxy.sh python-version/au.sh
 
 - au.sh：操作阿里云 DNS hook shell（PHP 环境）。
 - autxy.sh：操作腾讯云 DNS hook shell（PHP 环境）。
-- python-version/au.py：操作阿里云 DNS hook shell（Python 2.7/3.6）,感谢 @Duke-Wu 的 PR。
+- python-version/au.py：操作阿里云 DNS hook shell（兼容**Python 2/3**）,感谢 @Duke-Wu 的 PR。
 
 这三种运行环境什么意思呢？就是可根据自己服务器环境和域名服务商选择任意一个 hook shell（操作的时候任选其一即可）。
 
@@ -36,7 +36,7 @@ DNS API 密钥：
 
 - alydns.php，修改 accessKeyId、accessSecrec 变量，阿里云 [API key 和 Secrec 官方申请文档](https://help.aliyun.com/knowledge_detail/38738.html)。
 - txydns.php，修改 txyaccessKeyId、txyaccessSecrec 变量，腾讯云 [API 密钥官方申请文档](https://console.cloud.tencent.com/cam/capi)。
-- python-version/alydns27.py，修改 ACCESS_KEY_ID、ACCESS_KEY_SECRET，阿里云 [API key 和 Secrec 官方申请文档](https://help.aliyun.com/knowledge_detail/38738.html)。
+- python-version/alydns.py，修改 ACCESS_KEY_ID、ACCESS_KEY_SECRET，阿里云 [API key 和 Secrec 官方申请文档](https://help.aliyun.com/knowledge_detail/38738.html)。
 
 这个 API 密钥什么意思呢？由于需要通过 API 操作阿里云 DNS 或腾讯云 DNS 的记录，所以需要去域名服务商哪儿获取 API 密钥。
 
@@ -46,7 +46,7 @@ DNS API 密钥：
 
 ```
 # 测试是否有错误
-$ ./certbot-auto certonly  -d *.example.com --manual --preferred-challenges dns  --manual-auth-hook /脚本目录/au.sh（autxy.sh 或 python-version/27.py，下面统一以 au.sh 介绍）  --dry-run  
+$ ./certbot-auto certonly  -d *.example.com --manual --preferred-challenges dns  --manual-auth-hook /脚本目录/au.sh（autxy.sh 或 python-version/au.sh，下面统一以 au.sh 介绍）  --dry-run  
 
 # 实际申请
 $ ./certbot-auto certonly  -d *.example.com --manual --preferred-challenges dns  --manual-auth-hook /脚本目录/au.sh    
