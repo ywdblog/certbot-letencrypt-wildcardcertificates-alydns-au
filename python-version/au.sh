@@ -12,7 +12,8 @@ echo $path"/alydns.py"
 
 echo $CERTBOT_DOMAIN "_acme-challenge" $CERTBOT_VALIDATION
 
-python  $path"/alydns27.py"  $CERTBOT_DOMAIN "_acme-challenge"  $CERTBOT_VALIDATION >"/var/log/certdebug.log"
+# 根据自己机器的python环境选择python版本
+python  $path"/alydns.py"  $CERTBOT_DOMAIN "_acme-challenge"  $CERTBOT_VALIDATION >"/var/log/certdebug.log"
 
 # DNS TXT 记录刷新时间
 /bin/sleep 20

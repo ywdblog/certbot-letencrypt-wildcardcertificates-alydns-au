@@ -1,20 +1,29 @@
-#!/usr/bin/env python
 # coding:utf-8
 
 import base64
 import urllib
 import hmac
-import hashlib
 import pytz
 import datetime
 import random
 import string
 import json
-from sys import argv
+import sys
 
+pv = "python2"
+#python2
+if sys.version_info[0] < 3:
+    from urllib import quote
+    from urllib import urlencode
+    import hashlib
+else:
+    from urllib.parse import quote
+    from urllib.parse import urlencode 
+    from urllib import request
+    pv = "python3"
 
-ACCESS_KEY_ID = '阿里云 access_key_id'
-ACCESS_KEY_SECRET = '阿里云 access_key_secret'
+ACCESS_KEY_ID = 'access_key_id'
+ACCESS_KEY_SECRET = 'access_key_secret'
 
 
 class AliDns:
@@ -35,7 +44,7 @@ class AliDns:
 
     @staticmethod
     def percent_encode(str):
-        res = urllib.quote(str.encode('utf-8'), '')
+        res = quote(str.encode('utf-8'), '')
         res = res.replace('+', '%20')
         res = res.replace('*', '%2A')
         res = res.replace('%7E', '~')
@@ -65,10 +74,17 @@ class AliDns:
 
     @staticmethod
     def access_url(url):
-        f = urllib.urlopen(url)
-        result = f.read().decode('utf-8')
-        print(result)
-        return json.loads(result)
+        if pv == "python2" :
+            f = urllib.urlopen(url)
+            result = f.read().decode('utf-8')
+            #print(result)
+            return json.loads(result)
+        else :
+            req = request.Request(url) 
+            with request.urlopen(req) as f:
+                result = f.read().decode('utf-8')
+                #print(result)
+                return json.loads(result)
 
     def visit_url(self, action_param):
         common_param = {
@@ -85,11 +101,15 @@ class AliDns:
         string_to_sign = AliDns.sign_string(url_param)
 
         hash_bytes = self.access_key_secret + "&"
-        h = hmac.new(hash_bytes, string_to_sign, digestmod=hashlib.sha1)
+        if pv == "python2":
+            h = hmac.new(hash_bytes, string_to_sign, digestmod=hashlib.sha1)
+        else :
+            h = hmac.new(hash_bytes.encode('utf-8'), string_to_sign.encode('utf-8'), digestmod='SHA1')
+        
         signature = base64.encodestring(h.digest()).strip()
         url_param.setdefault('Signature', signature)
-        url = 'https://alidns.aliyuncs.com/?' + urllib.urlencode(url_param)
-        print(url)
+        url = 'https://alidns.aliyuncs.com/?' + urlencode(url_param)
+        #print(url)
         return AliDns.access_url(url)
 
     # 显示所有
@@ -142,24 +162,24 @@ class AliDns:
 
 
 if __name__ == '__main__':
-    # domain = AliDns(ACCESS_KEY_ID, ACCESS_KEY_SECRET, 'wuqianlin.cn')
+    # domain = AliDns(ACCESS_KEY_ID, ACCESS_KEY_SECRET, 'simplehttps.com')
     # domain.describe_domain_records()
-
     # 增加记录
     # domain.add_domain_record("TXT", "test", "test")
 
+   
     # 修改解析
-    # domain.update_domain_record('4011918010876928', 'TXT', 'test', 'text2')
-
+    #domain.update_domain_record('4011918010876928', 'TXT', 'test2', 'text2')
     # 删除解析记录
     # data = domain.describe_domain_records()
     # record_list = data["DomainRecords"]["Record"]
     # for item in record_list:
-    #     if 'test' in item['RR']:
-    #        domain.delete_domain_record(item['RecordId'])
+    #	if 'test' in item['RR']:
+    #		domain.delete_domain_record(item['RecordId'])
 
-    print(argv)
-    file_name, certbot_domain, acme_challenge, certbot_validation = argv
+   
+    #print(sys.argv)
+    file_name, certbot_domain, acme_challenge, certbot_validation = sys.argv
 
     domain = AliDns(ACCESS_KEY_ID, ACCESS_KEY_SECRET, certbot_domain)
     data = domain.describe_domain_records()
@@ -170,4 +190,3 @@ if __name__ == '__main__':
                 domain.delete_domain_record(item['RecordId'])
 
     domain.add_domain_record("TXT", acme_challenge, certbot_validation)
-
