@@ -91,6 +91,9 @@ class AliDns {
     	$arr[]=".me";
     	$arr[]=".int";
     	$arr[]=".edu";
+    	$arr[]=".link";
+	$arr[]=".uk";
+	$arr[]=".hk";
 
     	//二级域名
     	$seconddomain ="";
