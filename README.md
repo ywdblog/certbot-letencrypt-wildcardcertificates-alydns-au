@@ -1,4 +1,4 @@
- ### 功能
+### 功能
 
 使用 certbot 工具，为不能自动给 letencrypt 通配符证书自动续期（renew）而烦恼吗？这个工具能够帮忙！
 
@@ -19,7 +19,7 @@ $ git clone https://github.com/ywdblog/certbot-letencrypt-wildcardcertificates-a
 
 $ cd certbot-letencrypt-wildcardcertificates-alydns-au
 
-$ chmod 0777 au.sh autxy.sh python-version/au.sh
+$ chmod 0777 au.sh autxy.sh augodaddy.sh python-version/au.sh
 ```
 
 2：配置
@@ -29,6 +29,7 @@ $ chmod 0777 au.sh autxy.sh python-version/au.sh
 - au.sh：操作阿里云 DNS hook shell（PHP 环境）。
 - autxy.sh：操作腾讯云 DNS hook shell（PHP 环境）。
 - python-version/au.py：操作阿里云 DNS hook shell（兼容**Python 2/3**）,感谢 @Duke-Wu 的 PR。
+- augodaddy.sh：操作 GoDaddy DNS hook shell（PHP 环境），感谢 wlx_1990（微信号）的 PR。【2019-01-11】
 
 这三种运行环境什么意思呢？就是可根据自己服务器环境和域名服务商选择任意一个 hook shell（操作的时候任选其一即可）。
 
@@ -37,6 +38,7 @@ DNS API 密钥：
 - alydns.php，修改 accessKeyId、accessSecrec 变量，阿里云 [API key 和 Secrec 官方申请文档](https://help.aliyun.com/knowledge_detail/38738.html)。
 - txydns.php，修改 txyaccessKeyId、txyaccessSecrec 变量，腾讯云 [API 密钥官方申请文档](https://console.cloud.tencent.com/cam/capi)。
 - python-version/alydns.py，修改 ACCESS_KEY_ID、ACCESS_KEY_SECRET，阿里云 [API key 和 Secrec 官方申请文档](https://help.aliyun.com/knowledge_detail/38738.html)。
+- godaddydns.php，修改 txyaccessKeyId、txyaccessSecrec 变量，GoDaddy [API 密钥官方申请文档](https://developer.godaddy.com/keys)。
 
 这个 API 密钥什么意思呢？由于需要通过 API 操作阿里云 DNS 或腾讯云 DNS 的记录，所以需要去域名服务商哪儿获取 API 密钥。
 
@@ -95,7 +97,7 @@ $ ./certbot-auto renew --cert-name simplehttps.com  --manual-auth-hook /脚本�
 ### 其他
 
 - 可以关注公众号（虞大胆的叽叽喳喳，yudadanwx），了解更多密码学&HTTPS协议知识。
-- 我写了一本书[《深入浅出HTTPS：从原理到实战》](https://mp.weixin.qq.com/s/80oQhzmP9BTimoReo1oMeQ)了解更多关于HTTPS方面的知识。
+- 我写了一本书[《深入浅出HTTPS：从原理到实战》](https://mp.weixin.qq.com/s/80oQhzmP9BTimoReo1oMeQ)了解更多关于HTTPS方面的知识。**如果你觉得本书还可以，希望能在豆瓣做个点评，以便让更多人了解，非常感谢。豆瓣评论地址：[https://book.douban.com/subject/30250772/](https://book.douban.com/subject/30250772/)**
  
 公众号二维码：
 
