@@ -24,40 +24,49 @@ $ chmod 0777 au.sh autxy.sh augodaddy.sh python-version/au.sh
 
 2：配置
 
-目前该工具支持三种运行环境：
+目前该工具支持四种运行环境和场景：
 
 - au.sh：操作阿里云 DNS hook shell（PHP 环境）。
 - autxy.sh：操作腾讯云 DNS hook shell（PHP 环境）。
 - python-version/au.py：操作阿里云 DNS hook shell（兼容**Python 2/3**）,感谢 @Duke-Wu 的 PR。
 - augodaddy.sh：操作 GoDaddy DNS hook shell（PHP 环境），感谢 wlx_1990（微信号）的 PR。【2019-01-11】
 
-这三种运行环境什么意思呢？就是可根据自己服务器环境和域名服务商选择任意一个 hook shell（操作的时候任选其一即可）。
+这四种运行环境和场景什么意思呢？就是可根据自己服务器环境和域名服务商选择任意一个 hook shell（操作的时候任选其一即可）。
 
 DNS API 密钥：
 
 - alydns.php，修改 accessKeyId、accessSecrec 变量，阿里云 [API key 和 Secrec 官方申请文档](https://help.aliyun.com/knowledge_detail/38738.html)。
 - txydns.php，修改 txyaccessKeyId、txyaccessSecrec 变量，腾讯云 [API 密钥官方申请文档](https://console.cloud.tencent.com/cam/capi)。
 - python-version/alydns.py，修改 ACCESS_KEY_ID、ACCESS_KEY_SECRET，阿里云 [API key 和 Secrec 官方申请文档](https://help.aliyun.com/knowledge_detail/38738.html)。
-- godaddydns.php，修改 txyaccessKeyId、txyaccessSecrec 变量，GoDaddy [API 密钥官方申请文档](https://developer.godaddy.com/keys)。
+- godaddydns.php，修改 accessKeyId、accessSecrec 变量，GoDaddy [API 密钥官方申请文档](https://developer.godaddy.com/keys)。
 
 这个 API 密钥什么意思呢？由于需要通过 API 操作阿里云 DNS 或腾讯云 DNS 的记录，所以需要去域名服务商哪儿获取 API 密钥。
 
 3：申请证书
 
-**特别说明：** --manual-auth-hook 指定的 hook 文件三个任选其一（au.sh、autxy.sh、python-version/au.sh），其他操作完全相同。
+**特别说明：** --manual-auth-hook 指定的 hook 文件四个任选其一（au.sh、autxy.sh、augodaddy.sh、python-version/au.sh），其他操作完全相同。
 
 ```
 # 测试是否有错误
-$ ./certbot-auto certonly  -d *.example.com --manual --preferred-challenges dns  --manual-auth-hook /脚本目录/au.sh（autxy.sh 或 python-version/au.sh，下面统一以 au.sh 介绍）  --dry-run  
+$ ./certbot-auto certonly  -d *.example.com --manual --preferred-challenges dns --dry-run  --manual-auth-hook /脚本目录/au.sh（autxy.sh 或 python-version/au.sh，下面统一以 au.sh 介绍）
 
 # 实际申请
 $ ./certbot-auto certonly  -d *.example.com --manual --preferred-challenges dns  --manual-auth-hook /脚本目录/au.sh    
 ```
 
+参数解释（可以不用关心）：
+
+- certonly：表示采用验证模式，只会获取证书，不会为web服务器配置证书
+- --manual：表示插件
+- --preferred-challenges dns：表示采用DNS验证申请者合法性（是不是域名的管理者）
+- --dry-run：在实际申请/更新证书前进行测试，强烈推荐
+- -d：表示需要为那个域名申请证书，可以有多个。
+- --manual-auth-hook：在执行命令的时候调用一个 hook 文件
+
 如果你想为多个域名申请通配符证书（合并在一张证书中，也叫做 **SAN 通配符证书**），直接输入多个 -d 参数即可，比如：
 
 ```
-$ ./certbot-auto certonly  -d *.example.com -d *.example.org  --manual --preferred-challenges dns  --manual-auth-hook /脚本目录/au.sh  --dry-run  
+$ ./certbot-auto certonly  -d *.example.com -d *.example.org -d www.example.cn  --manual --preferred-challenges dns  --dry-run --manual-auth-hook /脚本目录/au.sh
 ```
 
 ### 续期证书
