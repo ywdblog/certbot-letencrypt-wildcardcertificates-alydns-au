@@ -100,8 +100,28 @@ $ ./certbot-auto renew --cert-name simplehttps.com  --manual-auth-hook /脚本�
 编辑文件 /etc/crontab :
 
 ```
+#证书有效期<30天才会renew，所以crontab可以配置为1天或1周
 1 1 */1 * * root certbot-auto renew --manual --preferred-challenges dns  --manual-auth-hook /脚本目录/au.sh 
 ```
+
+如果是certbot 机器和运行web服务（比如 nginx，apache）的机器是同一台，那么成功renew证书后，可以启动对应的web 服务器，运行下列crontab :
+
+```
+# 注意只有成功renew证书，才会重新启动nginx
+1 1 */1 * * root certbot-auto renew --manual --preferred-challenges dns -deploy-hook  "service nginx restart"  --manual-auth-hook /脚本目录/au.sh 
+```
+
+**注意：只有单机建议这样运行，如果要将证书同步到多台web服务器，需要有别的方案**
+
+### ROADMAP
+
+1: 关于申请 SAN 证书
+
+如果你想为 example.com,*.example.com 生成一张证书，目前会有Bug，可以查看下面的 [issues]( https://github.com/ywdblog/certbot-letencrypt-wildcardcertificates-alydns-au/issues/21) 临时解决。
+
+2：rsync 证书
+
+本工具只是生成或renew证书，一旦成功后，需要将证书同步到其他服务器上（大型应用肯定有多台机器，比如nginx，apache，haproxy），应用场景不一样，所以很难有统一的方案，后面可以考虑写个 github 仓库解决下。
 
 ### 其他
 
