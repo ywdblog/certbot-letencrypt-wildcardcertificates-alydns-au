@@ -184,6 +184,7 @@ if __name__ == '__main__':
     #		domain.delete_domain_record(item['RecordId'])
 
    
+<<<<<<< HEAD
 	# 第一个参数是 action，代表 (add/clean) 
 	# 第二个参数是域名 
 	# 第三个参数是主机名（第三个参数+第二个参数组合起来就是要添加的 TXT 记录）
@@ -225,3 +226,18 @@ if __name__ == '__main__':
 
 print ("域名 API 调用结束")
 
+=======
+    #print(sys.argv)
+    file_name, cmd, certbot_domain, acme_challenge, certbot_validation = sys.argv
+
+    domain = AliDns(ACCESS_KEY_ID, ACCESS_KEY_SECRET, certbot_domain)
+    if cmd == "add":
+        domain.add_domain_record("TXT", acme_challenge, certbot_validation)
+    elif cmd == "delete":
+        data = domain.describe_domain_records()
+        record_list = data["DomainRecords"]["Record"]
+        if record_list:
+            for item in record_list:
+                if (item['RR'] == acme_challenge and item['Value'] == certbot_validation):
+                    domain.delete_domain_record(item['RecordId'])
+>>>>>>> 修改python版本的脚本,自动添加和删除DNS记录,解决同时多个子域名的问题
