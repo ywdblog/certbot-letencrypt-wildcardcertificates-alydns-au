@@ -179,14 +179,15 @@ if __name__ == '__main__':
 
    
     #print(sys.argv)
-    file_name, certbot_domain, acme_challenge, certbot_validation = sys.argv
+    file_name, cmd, certbot_domain, acme_challenge, certbot_validation = sys.argv
 
     domain = AliDns(ACCESS_KEY_ID, ACCESS_KEY_SECRET, certbot_domain)
-    data = domain.describe_domain_records()
-    record_list = data["DomainRecords"]["Record"]
-    if record_list:
-        for item in record_list:
-            if acme_challenge == item['RR']:
-                domain.delete_domain_record(item['RecordId'])
-
-    domain.add_domain_record("TXT", acme_challenge, certbot_validation)
+    if cmd == "add":
+        domain.add_domain_record("TXT", acme_challenge, certbot_validation)
+    elif cmd == "delete":
+        data = domain.describe_domain_records()
+        record_list = data["DomainRecords"]["Record"]
+        if record_list:
+            for item in record_list:
+                if (item['RR'] == acme_challenge and item['Value'] == certbot_validation):
+                    domain.delete_domain_record(item['RecordId'])
