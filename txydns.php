@@ -4,21 +4,41 @@ date_default_timezone_set("GMT");
 
 ############ 请在腾讯云申请“API密钥”，替换下面两个常量
 //去 https://console.cloud.tencent.com/cam/capi 页面申请 
-define("txyaccessKeyId", "");
-define("txyaccessSecrec", "");
+//https://cloud.tencent.com/document/product/302/4032
 
-######### 类测试
+
+define("txyaccessKeyId", "AKIDwlPr7DUpLgpZBb4tlT0MWUHtIVXOJwxm");
+define("txyaccessSecrec", "mMkxzoTxOirrfJlFYfbS7g7792jEi5GG");
+
+
 /*
   $obj = new TxyDns(txyaccessKeyId, txyaccessSecrec, "yudadan.com");
   //显示所有域名
-  //$obj->DomainList();
-  //添加域名 TXT 记录
-  $obj->RecordCreate("www3","TXT","s");
-  //显示某个域名所有的 TXT 记录
-  $data = $obj->RecordList("www3","TXT");
+  $data = $obj->DomainList();
+  if ($data["code"]!=0) {
+	echo $data["message"] . "\n";	
+  } 
+//可以增加同名的二条
+  $data = $obj->RecordCreate("www3","TXT",rand(10,1000));
+  $data = $obj->RecordCreate("www3","TXT",rand(10,1000));
+  $data = $obj->RecordCreate("www3.www3","TXT",rand(10,1000));
 
+  if ($data["code"]!=0) {
+	echo $data["message"] . "\n";	
+  }  
+
+//查看一个主机的所有txt 记录
+$data = $obj->RecordList("www3.www3","TXT");
+
+$data = $obj->RecordList("www3","TXT");
+$records = $data["data"]["records"];
+foreach ($records as $k=>$v) {
+ //根据ID修改记录
+ $data = $obj->RecordModify("www3", "TXT", rand(1000,2000), $v["id"]);
+//根据ID删除记录 
+$obj->RecordDelete($v["id"]);
+}
 */
-
 
 ###### 代码运行
 // php txydns.php  "simplehttps.com" "txtname" "txtvalue"  
@@ -28,6 +48,8 @@ define("txyaccessSecrec", "");
 
 $domainarray = TxyDns::getDomain($argv[1]);
 $selfdomain = ($domainarray[0]=="")?$argv[2]:$argv[2] . "." . $domainarray[0];
+
+
 
 //为了匹配出二级域名，以及正确的RR
 $obj = new TxyDns(txyaccessKeyId, txyaccessSecrec, $domainarray[1]);

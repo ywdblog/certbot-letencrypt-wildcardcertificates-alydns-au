@@ -2,10 +2,6 @@
 
 date_default_timezone_set("GMT");
 
-//这两个值需要去阿里云申请
-define("accessKeyId", "");
-define("accessSecrec", "");
-
 /*
 //$obj = new AliDns(accessKeyId, accessSecrec, "newyingyong.cn");
 
@@ -34,28 +30,46 @@ define("accessSecrec", "");
 /*
 example:
 
-php alydns.php  "simplehttps.com" "test" "test2" 
+php alydns.php  "simplehttps.com" "dnsv" "dnsk"  APPKEY APPTOKEN
 */
 
 ########## 配合 cerbot 运行 
 
-echo $argv[1] . "-" . $argv[2] . "-" . $argv[3];
+# 第一个参数是 action，代表 (add/clean) 
+# 第二个参数是域名 
+# 第三个参数是主机名（第三个参数+第二个参数组合起来就是要添加的 TXT 记录）
+# 第四个参数是 TXT 记录值
+# 第五个参数是 APPKEY
+# 第六个参数是 APPTOKEN
 
-$domainarray = AliDns::getDomain($argv[1]);
-$selfdomain = ($domainarray[0]=="")?$argv[2]:$argv[2] . "." . $domainarray[0];
+echo "域名 API 调用开始\n" ;
 
-$obj = new AliDns(accessKeyId, accessSecrec, $domainarray[1]);
-$data = $obj->DescribeDomainRecords();
-$data = $data["DomainRecords"]["Record"];
-if (is_array($data)) {
-      foreach ($data as $v) {
-           if ($v["RR"] == $selfdomain) {
-               $res = $obj->DeleteDomainRecord($v["RecordId"]);
-           }
-      }
+echo $argv[1] . "-" . $argv[2] . "-" . $argv[3] . "-" . $argv[5] . "-" . $argv[5] . "-" . $argv[6] . "\n";
+
+$domainarray = AliDns::getDomain($argv[2]);
+$selfdomain = ($domainarray[0]=="")?$argv[3]:$argv[3] . "." . $domainarray[0];
+
+$obj = new AliDns($argv[5], $argv[6], $domainarray[1]);
+
+switch ($argv[1]) {
+	case "clean":
+		$data = $obj->DescribeDomainRecords();
+		$data = $data["DomainRecords"]["Record"];
+		if (is_array($data)) {
+      			foreach ($data as $v) {
+	           	if ($v["RR"] == $selfdomain) {
+               		$res = $obj->DeleteDomainRecord($v["RecordId"]);
+        	   	}
+      		}
 } 
+	break;
 
-$res = $obj->AddDomainRecord("TXT", $selfdomain,$argv[3]);
+case "add":
+	$res = $obj->AddDomainRecord("TXT", $selfdomain,$argv[3]);
+break;
+}
+
+echo "域名 API 调用结束\n" ;
 
 ############ Class 定义
 
