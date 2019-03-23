@@ -50,6 +50,8 @@ $ chmod 0777 au.sh
 $ ./certbot-auto certonly  -d *.example.com --manual --preferred-challenges dns --dry-run  --manual-auth-hook "/脚本目录/au.sh php aly add" --manual-cleanup-hook "/脚本目录/au.sh php aly clean" 
 ```
 
+**Debug：**操作 DNS API 可能会遇到一系列问题，比如 API token 权限不足，遇到相关问题，可以查看 /var/log/certd.log 文件。
+
 **重要解释：**
 
 其中 --manual-auth-hook 和 --manual-cleanup-hook 中 au.sh 有三个参数（第一个代表你要选择那种语言(php/python)，第二个参数代表你的DNS厂商(aly/txy)，第三个参数是固定的(--manual-auth-hook中用add，--manual-clean-hook中用clean)）。
