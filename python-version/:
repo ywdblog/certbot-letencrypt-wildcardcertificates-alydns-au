@@ -191,19 +191,17 @@ if __name__ == '__main__':
 	# 第五个参数是 APPKEY
 	# 第六个参数是 APPTOKEN
     #sys.exit(0)
-    
-    print ("域名 API 调用开始")
-    print ("-".join(sys.argv))
+    print(sys.argv)
     file_name, cmd ,certbot_domain, acme_challenge, certbot_validation,ACCESS_KEY_ID, ACCESS_KEY_SECRET = sys.argv
-  
- 
+   
     certbot_domain=AliDns.getDomain(certbot_domain)
     # print (certbot_domain)
-    if certbot_domain[0]=="":
+    if ertbot_domain[0]=="":
             selfdomain =  acme_challenge
     else:
             selfdomain = acme_challenge + "." + certbot_domain[0]
 
+    print(selfdomain)    
 
     domain = AliDns(ACCESS_KEY_ID, ACCESS_KEY_SECRET, certbot_domain[1])
   
@@ -214,14 +212,12 @@ if __name__ == '__main__':
 		print ("aly dns 域名增加失败-"+str(result["Code"]) + ":" + str(result["Message"]))
     elif cmd == "clean":
         data = domain.describe_domain_records()
-	if "Code" in data:
-		print ("aly dns 域名删除失败-"+str(data["Code"]) + ":" + str(data["Message"]))
-		sys.exit(0)
+        print (data)  
 	record_list = data["DomainRecords"]["Record"]
+	sys.exit(0)
         if record_list:
             for item in record_list:
                 if (item['RR'] == selfdomain):
                     domain.delete_domain_record(item['RecordId'])
 
-print ("域名 API 调用结束")
 

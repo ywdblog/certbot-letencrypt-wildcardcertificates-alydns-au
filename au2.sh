@@ -82,7 +82,7 @@ case $plang in
         ;;	
 esac
 
-
+#print ($cmd)
 $cmd $dnsapi $paction $CERTBOT_DOMAIN "_acme-challenge" $CERTBOT_VALIDATION $key $token >>"/var/log/certd.log"
 
    if [[ "$paction" == "add" ]]; then
