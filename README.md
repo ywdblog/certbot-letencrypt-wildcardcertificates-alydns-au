@@ -43,17 +43,19 @@ $ chmod 0777 au.sh
 这四种运行环境和场景什么意思呢？就是可根据自己服务器环境和域名服务商选择任意一个 hook shell（包含相应参数）。
 
 3：申请证书
-
-**特别说明：** --manual-auth-hook 根据运行环境（语言，DNS产商，add/clean）指定 hook 文件和操作参数。
-
+ 
 测试是否有错误：
 
 ```
 $ ./certbot-auto certonly  -d *.example.com --manual --preferred-challenges dns --dry-run  --manual-auth-hook "/脚本目录/au.sh php aly add" --manual-cleanup-hook "/脚本目录/au.sh php aly clean" 
 ```
 
-**如果你要选择Python环境**，可以将 --manual-auth-hook 和 --manual-cleanup-hook 的输入修改为 "/脚本目录/au.sh python aly clean"
+**重要解释：**
 
+其中 --manual-auth-hook 和 --manual-cleanup-hook 中 au.sh 有三个参数（第一个代表你要选择那种语言(php/python)，第二个参数代表你的DNS厂商(aly/txy)，第三个参数是固定的(--manual-auth-hook中用add，--manual-clean-hook中用clean)）。
+
+比如你要选择Python环境，可以将 --manual-auth-hook 输入修改为 "/脚本目录/au.sh python aly add"，--manual-cleanup-hook 输入修改为  "/脚本目录/au.sh python aly clean"
+ 
 确认无误后，实际运行（去除 --dry-run 参数）：
 
 ``` 
