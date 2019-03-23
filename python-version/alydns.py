@@ -22,10 +22,6 @@ else:
     from urllib import request
     pv = "python3"
 
-ACCESS_KEY_ID = 'access_key_id'
-ACCESS_KEY_SECRET = 'access_key_secret'
-
-
 class AliDns:
     def __init__(self, access_key_id, access_key_secret, domain_name):
         self.access_key_id = access_key_id
@@ -162,10 +158,11 @@ class AliDns:
 
 
 if __name__ == '__main__':
-    # domain = AliDns(ACCESS_KEY_ID, ACCESS_KEY_SECRET, 'simplehttps.com')
-    # domain.describe_domain_records()
-    # 增加记录
-    # domain.add_domain_record("TXT", "test", "test")
+    #filename,ACCESS_KEY_ID, ACCESS_KEY_SECRET = sys.argv
+    #domain = AliDns(ACCESS_KEY_ID, ACCESS_KEY_SECRET, 'simplehttps.com')
+    #domain.describe_domain_records()
+    #增加记录
+    #print(domain.add_domain_record("TXT", "test", "test"))
 
    
     # 修改解析
@@ -178,15 +175,25 @@ if __name__ == '__main__':
     #		domain.delete_domain_record(item['RecordId'])
 
    
-    #print(sys.argv)
-    file_name, certbot_domain, acme_challenge, certbot_validation = sys.argv
+	# 第一个参数是 action，代表 (add/clean) 
+	# 第二个参数是域名 
+	# 第三个参数是主机名（第三个参数+第二个参数组合起来就是要添加的 TXT 记录）
+	# 第四个参数是 TXT 记录值
+	# 第五个参数是 APPKEY
+	# 第六个参数是 APPTOKEN
+    #sys.exit(0)
+    print(sys.argv)
+    file_name, cmd ,certbot_domain, acme_challenge, certbot_validation,ACCESS_KEY_ID, ACCESS_KEY_SECRET = sys.argv
 
     domain = AliDns(ACCESS_KEY_ID, ACCESS_KEY_SECRET, certbot_domain)
-    data = domain.describe_domain_records()
-    record_list = data["DomainRecords"]["Record"]
-    if record_list:
-        for item in record_list:
-            if acme_challenge == item['RR']:
-                domain.delete_domain_record(item['RecordId'])
+    if cmd == "add":
+        print(domain.add_domain_record("TXT", acme_challenge, certbot_validation))
+    elif cmd == "clean":
+        data = domain.describe_domain_records()
+        record_list = data["DomainRecords"]["Record"]
+        if record_list:
+            for item in record_list:
+                if (item['RR'] == acme_challenge and item['Value'] == certbot_validation):
+                    domain.delete_domain_record(item['RecordId'])
 
-    domain.add_domain_record("TXT", acme_challenge, certbot_validation)
+
