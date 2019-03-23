@@ -1,16 +1,16 @@
 #!/bin/bash
 
-#ywdblog@gmail.com 欢迎关注我的书
+#ywdblog@gmail.com 欢迎关注我的书《深入浅出HTTPS：从原理到实战》
 
 #填写腾讯云的AccessKey ID及AccessKey Secret
 #如何申请见https://help.aliyun.com/knowledge_detail/38738.html
-ALY_KEY="LTAIkLV6coSSKklZ"
-ALY_TOKEN="YEGDVHQV4oBC6AGQM9BWaHStUtNE5M"
+ALY_KEY=""
+ALY_TOKEN=""
 
 #填写腾讯云的SecretId及SecretKey
 #如何申请见https://console.cloud.tencent.com/cam/capi
-TXY_KEY="AKIDwlPr7DUpLgpZBb4tlT0MWUHtIVXOJwxm"
-TXY_TOKEN="mMkxzoTxOirrfJlFYfbS7g7792jEi5GG"
+TXY_KEY=""
+TXY_TOKEN=""
 
 #GoDaddy的SecretId及SecretKey
 #如何申请见https://developer.godaddy.com/getstarted

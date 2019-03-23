@@ -19,39 +19,46 @@ $ git clone https://github.com/ywdblog/certbot-letencrypt-wildcardcertificates-a
 
 $ cd certbot-letencrypt-wildcardcertificates-alydns-au
 
-$ chmod 0777 au.sh autxy.sh augodaddy.sh python-version/au.sh
+$ chmod 0777 au.sh 
 ```
 
 2：配置
 
-目前该工具支持四种运行环境和场景：
+（1）DNS API 密钥：
 
-- au.sh：操作阿里云 DNS hook shell（PHP 环境）。
-- autxy.sh：操作腾讯云 DNS hook shell（PHP 环境）。
-- python-version/au.py：操作阿里云 DNS hook shell（兼容**Python 2/3**）,感谢 @Duke-Wu 的 PR。
-- augodaddy.sh：操作 GoDaddy DNS hook shell（PHP 环境），感谢 wlx_1990（微信号）的 PR。【2019-01-11】
+这个 API 密钥什么意思呢？由于需要通过 API 操作阿里云 DNS 或腾讯云 DNS 的记录，所以需要去域名服务商哪儿获取 API 密钥。，然后配置在 au.sh 文件中
 
-这四种运行环境和场景什么意思呢？就是可根据自己服务器环境和域名服务商选择任意一个 hook shell（操作的时候任选其一即可）。
+- ALY_KEY 和 ALY_TOKEN：阿里云 [API key 和 Secrec 官方申请文档](https://help.aliyun.com/knowledge_detail/38738.html)。
+- TXY_KEY 和 TXY_TOKEN：腾讯云 [API 密钥官方申请文档](https://console.cloud.tencent.com/cam/capi)。
 
-DNS API 密钥：
+（2）目前该工具支持四种运行环境和场景，通过 hook 文件和参数来调用：
 
-- alydns.php，修改 accessKeyId、accessSecrec 变量，阿里云 [API key 和 Secrec 官方申请文档](https://help.aliyun.com/knowledge_detail/38738.html)。
-- txydns.php，修改 txyaccessKeyId、txyaccessSecrec 变量，腾讯云 [API 密钥官方申请文档](https://console.cloud.tencent.com/cam/capi)。
-- python-version/alydns.py，修改 ACCESS_KEY_ID、ACCESS_KEY_SECRET，阿里云 [API key 和 Secrec 官方申请文档](https://help.aliyun.com/knowledge_detail/38738.html)。
-- godaddydns.php，修改 accessKeyId、accessSecrec 变量，GoDaddy [API 密钥官方申请文档](https://developer.godaddy.com/keys)。
+- PHP
+	- au.sh php aly add/clean：PHP 表示选择PHP命令行，操作阿里云DNS，增加/清空指定 DNS TXT 记录。
+	- au.sh php txy add/clean：PHP 表示选择PHP命令行，操作腾讯云DNS，增加/清空指定 DNS TXT 记录。
+- Python
+	- au.sh python aly add/clean：PHP 表示选择PHP命令行，操作阿里云DNS，增加/清空指定 DNS TXT 记录。
+	- au.sh python txy add/clean：PHP 表示选择PHP命令行，操作腾讯云DNS，增加/清空指定 DNS TXT 记录。
 
-这个 API 密钥什么意思呢？由于需要通过 API 操作阿里云 DNS 或腾讯云 DNS 的记录，所以需要去域名服务商哪儿获取 API 密钥。
+这四种运行环境和场景什么意思呢？就是可根据自己服务器环境和域名服务商选择任意一个 hook shell（包含相应参数）。
 
 3：申请证书
 
-**特别说明：** --manual-auth-hook 指定的 hook 文件四个任选其一（au.sh、autxy.sh、augodaddy.sh、python-version/au.sh），其他操作完全相同。
+**特别说明：** --manual-auth-hook 根据运行环境（语言，DNS产商，add/clean）指定 hook 文件和操作参数。
+
+测试是否有错误：
 
 ```
-# 测试是否有错误
-$ ./certbot-auto certonly  -d *.example.com --manual --preferred-challenges dns --dry-run  --manual-auth-hook /脚本目录/au.sh（autxy.sh 或 python-version/au.sh，下面统一以 au.sh 介绍）
+$ ./certbot-auto certonly  -d *.example.com --manual --preferred-challenges dns --dry-run  --manual-auth-hook "/脚本目录/au.sh php aly add" --manual-cleanup-hook "/脚本目录/au.sh php aly clean" 
+```
 
+**如果你要选择Python环境**，可以将 --manual-auth-hook 和 --manual-cleanup-hook 的输入修改为 "/脚本目录/au.sh python aly clean"
+
+确认无误后，实际运行（去除 --dry-run 参数）：
+
+``` 
 # 实际申请
-$ ./certbot-auto certonly  -d *.example.com --manual --preferred-challenges dns  --manual-auth-hook /脚本目录/au.sh    
+$ ./certbot-auto certonly  -d *.example.com --manual --preferred-challenges dns --manual-auth-hook "/脚本目录/au.sh php aly add" --manual-cleanup-hook "/脚本目录/au.sh php aly clean"   
 ```
 
 参数解释（可以不用关心）：
@@ -62,19 +69,22 @@ $ ./certbot-auto certonly  -d *.example.com --manual --preferred-challenges dns 
 - --dry-run：在实际申请/更新证书前进行测试，强烈推荐
 - -d：表示需要为那个域名申请证书，可以有多个。
 - --manual-auth-hook：在执行命令的时候调用一个 hook 文件
+- --manual-cleanup-hook：清除 DNS 添加的 TXT 值
 
 如果你想为多个域名申请通配符证书（合并在一张证书中，也叫做 **SAN 通配符证书**），直接输入多个 -d 参数即可，比如：
 
 ```
-$ ./certbot-auto certonly  -d *.example.com -d *.example.org -d www.example.cn  --manual --preferred-challenges dns  --dry-run --manual-auth-hook /脚本目录/au.sh
+$ ./certbot-auto certonly  -d *.example.com -d *.example.org -d www.example.cn  --manual --preferred-challenges dns  --dry-run --manual-auth-hook "/脚本目录/au.sh php aly add" --manual-cleanup-hook "/脚本目录/au.sh php aly clean" 
 ```
 
 ### 续期证书
 
+**注意，根据自己的环境和DNS厂商选择 hook 和参数**
+
 1：对机器上所有证书 renew
 
 ```
-$ ./certbot-auto renew  --manual --preferred-challenges dns  --manual-auth-hook /脚本目录/au.sh   
+$ ./certbot-auto renew  --manual --preferred-challenges dns --manual-auth-hook "/脚本目录/au.sh php aly add" --manual-cleanup-hook "/脚本目录/au.sh php aly clean"  
 ```
 
 2：对某一张证书进行续期
@@ -92,7 +102,7 @@ $ ./certbot-auto certificates
 记住证书名，比如 simplehttps.com，然后运行下列命令 renew：
 
 ```
-$ ./certbot-auto renew --cert-name simplehttps.com  --manual-auth-hook /脚本目录/au.sh 
+$ ./certbot-auto renew --cert-name simplehttps.com  --manual-auth-hook "/脚本目录/au.sh php aly add" --manual-cleanup-hook "/脚本目录/au.sh php aly clean" 
 ```
 
 ### 加入 crontab 
@@ -101,25 +111,31 @@ $ ./certbot-auto renew --cert-name simplehttps.com  --manual-auth-hook /脚本�
 
 ```
 #证书有效期<30天才会renew，所以crontab可以配置为1天或1周
-1 1 */1 * * root certbot-auto renew --manual --preferred-challenges dns  --manual-auth-hook /脚本目录/au.sh 
+1 1 */1 * * root certbot-auto renew --manual --preferred-challenges dns  --manual-auth-hook "/脚本目录/au.sh php aly add" --manual-cleanup-hook "/脚本目录/au.sh php aly clean" 
 ```
 
 如果是certbot 机器和运行web服务（比如 nginx，apache）的机器是同一台，那么成功renew证书后，可以启动对应的web 服务器，运行下列crontab :
 
 ```
 # 注意只有成功renew证书，才会重新启动nginx
-1 1 */1 * * root certbot-auto renew --manual --preferred-challenges dns -deploy-hook  "service nginx restart"  --manual-auth-hook /脚本目录/au.sh 
+1 1 */1 * * root certbot-auto renew --manual --preferred-challenges dns -deploy-hook  "service nginx restart" --manual-auth-hook "/脚本目录/au.sh php aly add" --manual-cleanup-hook "/脚本目录/au.sh php aly clean" 
 ```
 
 **注意：只有单机建议这样运行，如果要将证书同步到多台web服务器，需要有别的方案**
 
 ### ROADMAP
 
-1: 关于申请 SAN 证书
+1: ~~关于申请 SAN 证书~~
 
-如果你想为 example.com,*.example.com 生成一张证书，目前会有Bug，可以查看下面的 [issues]( https://github.com/ywdblog/certbot-letencrypt-wildcardcertificates-alydns-au/issues/21) 临时解决。
+~~如果你想为 example.com,*.example.com 生成一张证书，目前会有Bug，可以查看下面的 [issues]( https://github.com/ywdblog/certbot-letencrypt-wildcardcertificates-alydns-au/issues/21) 临时解决。~~
 
-2：rsync 证书
+2：~~代码优化~~
+
+- ~~入口文件修改为一个 au.sh，API Key 统一写在 au.sh 文件~~
+- ~~增加调试log，可查看 /var/log/certd.log~~
+- ~~修复 python 版本的 Bug~~
+
+3：rsync 证书
 
 本工具只是生成或renew证书，一旦成功后，需要将证书同步到其他服务器上（大型应用肯定有多台机器，比如nginx，apache，haproxy），应用场景不一样，所以很难有统一的方案，后面可以考虑写个 github 仓库解决下。
 
