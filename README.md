@@ -31,14 +31,16 @@ $ chmod 0777 au.sh
 - ALY_KEY 和 ALY_TOKEN：阿里云 [API key 和 Secrec 官方申请文档](https://help.aliyun.com/knowledge_detail/38738.html)。
 - TXY_KEY 和 TXY_TOKEN：腾讯云 [API 密钥官方申请文档](https://console.cloud.tencent.com/cam/capi)。
 
-（2）目前该工具支持四种运行环境和场景，通过 hook 文件和参数来调用：
+（2）选择运行环境
+
+目前该工具支持四种运行环境和场景，通过 hook 文件和参数来调用：
 
 - PHP
-	- au.sh php aly add/clean：PHP 表示选择PHP命令行，操作阿里云DNS，增加/清空DNS。
-	- au.sh php txy add/clean：PHP 表示选择PHP命令行，操作腾讯云DNS，增加/清空DNS。
+	- au.sh php aly add/clean：表示选择PHP命令行，操作阿里云DNS，增加/清空DNS。
+	- au.sh php txy add/clean：表示选择PHP命令行，操作腾讯云DNS，增加/清空DNS。
 - Python
-	- au.sh python aly add/clean：PHP 表示选择PHP命令行，操作阿里云DNS，增加/清空DNS。
-	- au.sh python txy add/clean：PHP 表示选择PHP命令行，操作腾讯云DNS，增加/清空DNS。(需要安装第三方库，pip install requests 或 pip3 install requests，后续我会优化使用python内建库)
+	- au.sh python aly add/clean：表示选择Python命令行，操作阿里云DNS，增加/清空DNS。
+	- au.sh python txy add/clean：表示选择ython命令行，操作腾讯云DNS，增加/清空DNS。(需要安装第三方库，pip install requests 或 pip3 install requests，后续我会优化使用python内建库)
 
 这四种运行环境和场景什么意思呢？就是可根据自己服务器环境和域名服务商选择任意一个 hook shell（包含相应参数）。
 
@@ -52,7 +54,7 @@ $ ./certbot-auto certonly  -d *.example.com --manual --preferred-challenges dns 
 
 **Debug：** 操作 DNS API 可能会遇到一系列问题，比如 API token 权限不足，遇到相关问题，可以查看 /var/log/certd.log。
 
-**重要解释：** --manual-auth-hook 和 --manual-cleanup-hook 有三个参数:
+**重要解释：** --manual-auth-hook 和 --manual-cleanup-hook 有三个参数：
 
 - 第一个代表你要选择那种语言(php/python)
 - 第二个参数代表你的DNS厂商(aly/txy)
@@ -128,22 +130,6 @@ $ ./certbot-auto renew --cert-name simplehttps.com  --manual-auth-hook "/脚本�
 ```
 
 **注意：只有单机建议这样运行，如果要将证书同步到多台web服务器，需要有别的方案**
-
-### ROADMAP
-
-1: ~~关于申请 SAN 证书~~
-
-~~如果你想为 example.com,*.example.com 生成一张证书，目前会有Bug，可以查看下面的 [issues]( https://github.com/ywdblog/certbot-letencrypt-wildcardcertificates-alydns-au/issues/21) 临时解决。~~
-
-2：~~代码优化~~
-
-- ~~入口文件修改为一个 au.sh，API Key 统一写在 au.sh 文件~~
-- ~~增加调试log，可查看 /var/log/certd.log~~
-- ~~修复 python 版本的 Bug~~
-
-3：rsync 证书
-
-本工具只是生成或renew证书，一旦成功后，需要将证书同步到其他服务器上（大型应用肯定有多台机器，比如nginx，apache，haproxy），应用场景不一样，所以很难有统一的方案，后面可以考虑写个 github 仓库解决下。
 
 ### 其他
 
