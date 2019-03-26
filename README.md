@@ -26,7 +26,7 @@ $ chmod 0777 au.sh
 
 （1）DNS API 密钥：
 
-这个 API 密钥什么意思呢？由于需要通过 API 操作阿里云 DNS 或腾讯云 DNS 的记录，所以需要去域名服务商哪儿获取 API 密钥。，然后配置在 au.sh 文件中
+这个 API 密钥什么意思呢？由于需要通过 API 操作阿里云 DNS 或腾讯云 DNS 的记录，所以需要去域名服务商哪儿获取 API 密钥，然后配置在 au.sh 文件中:
 
 - ALY_KEY 和 ALY_TOKEN：阿里云 [API key 和 Secrec 官方申请文档](https://help.aliyun.com/knowledge_detail/38738.html)。
 - TXY_KEY 和 TXY_TOKEN：腾讯云 [API 密钥官方申请文档](https://console.cloud.tencent.com/cam/capi)。
@@ -34,11 +34,11 @@ $ chmod 0777 au.sh
 （2）目前该工具支持四种运行环境和场景，通过 hook 文件和参数来调用：
 
 - PHP
-	- au.sh php aly add/clean：PHP 表示选择PHP命令行，操作阿里云DNS，增加/清空指定 DNS TXT 记录。
-	- au.sh php txy add/clean：PHP 表示选择PHP命令行，操作腾讯云DNS，增加/清空指定 DNS TXT 记录。
+	- au.sh php aly add/clean：PHP 表示选择PHP命令行，操作阿里云DNS，增加/清空DNS。
+	- au.sh php txy add/clean：PHP 表示选择PHP命令行，操作腾讯云DNS，增加/清空DNS。
 - Python
-	- au.sh python aly add/clean：PHP 表示选择PHP命令行，操作阿里云DNS，增加/清空指定 DNS TXT 记录。
-	- au.sh python txy add/clean：PHP 表示选择PHP命令行，操作腾讯云DNS，增加/清空指定 DNS TXT 记录。
+	- au.sh python aly add/clean：PHP 表示选择PHP命令行，操作阿里云DNS，增加/清空DNS。
+	- au.sh python txy add/clean：PHP 表示选择PHP命令行，操作腾讯云DNS，增加/清空DNS。(需要安装第三方库，pip install requests 或 pip3 install requests，后续我会优化使用python内建库)
 
 这四种运行环境和场景什么意思呢？就是可根据自己服务器环境和域名服务商选择任意一个 hook shell（包含相应参数）。
 
@@ -50,11 +50,13 @@ $ chmod 0777 au.sh
 $ ./certbot-auto certonly  -d *.example.com --manual --preferred-challenges dns --dry-run  --manual-auth-hook "/脚本目录/au.sh php aly add" --manual-cleanup-hook "/脚本目录/au.sh php aly clean" 
 ```
 
-**Debug：**操作 DNS API 可能会遇到一系列问题，比如 API token 权限不足，遇到相关问题，可以查看 /var/log/certd.log 文件。
+**Debug：** 操作 DNS API 可能会遇到一系列问题，比如 API token 权限不足，遇到相关问题，可以查看 /var/log/certd.log。
 
-**重要解释：**
+**重要解释：** --manual-auth-hook 和 --manual-cleanup-hook 有三个参数:
 
-其中 --manual-auth-hook 和 --manual-cleanup-hook 中 au.sh 有三个参数（第一个代表你要选择那种语言(php/python)，第二个参数代表你的DNS厂商(aly/txy)，第三个参数是固定的(--manual-auth-hook中用add，--manual-clean-hook中用clean)）。
+- 第一个代表你要选择那种语言(php/python)
+- 第二个参数代表你的DNS厂商(aly/txy)
+- 第三个参数是固定的(--manual-auth-hook中用add，--manual-clean-hook中用clean)
 
 比如你要选择Python环境，可以将 --manual-auth-hook 输入修改为 "/脚本目录/au.sh python aly add"，--manual-cleanup-hook 输入修改为  "/脚本目录/au.sh python aly clean"
  
@@ -73,7 +75,7 @@ $ ./certbot-auto certonly  -d *.example.com --manual --preferred-challenges dns 
 - --dry-run：在实际申请/更新证书前进行测试，强烈推荐
 - -d：表示需要为那个域名申请证书，可以有多个。
 - --manual-auth-hook：在执行命令的时候调用一个 hook 文件
-- --manual-cleanup-hook：清除 DNS 添加的 TXT 值
+- --manual-cleanup-hook：清除 DNS 添加的记录
 
 如果你想为多个域名申请通配符证书（合并在一张证书中，也叫做 **SAN 通配符证书**），直接输入多个 -d 参数即可，比如：
 

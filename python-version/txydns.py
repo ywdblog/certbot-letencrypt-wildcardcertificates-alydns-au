@@ -5,6 +5,9 @@ import time
 import random
 import hashlib
 import binascii
+#第三方包,需要安装
+# python2:pip install requests
+# python3:pip3 install requests
 import requests
 
 # @akgnah https://github.com/akgnah
@@ -74,13 +77,23 @@ class Cns:
         host, uri = 'cns.api.qcloud.com', '/v2/index.php'
         self.client = Client(secret_id, secret_key, host, uri)
 
-    def list(self, domain):
+    def list(self, domain,subDomain):
         body = {
             'Action': 'RecordList',
-            'domain': domain
+            'domain': domain,
+            'subDomain': subDomain
         }
 
         return self.client.send(body)
+
+    @staticmethod
+    def getDomain(domain):
+        domain_parts = domain.split('.')
+        if len(domain_parts) > 2:
+            rootdomain='.'.join(domain_parts[-(2 if domain_parts[-1] in {"co.jp","com.tw","net","com","com.cn","org","cn","gov","net.cn","io","top","me","int","edu","link"} else 3):])
+            selfdomain=domain.split(rootdomain)[0]
+            return (selfdomain[0:len(selfdomain)-1],rootdomain)
+        return ("",domain)
 
     def create(self, domain, name, _type, value):
         body = {
@@ -91,7 +104,6 @@ class Cns:
             'recordLine': '默认',
             'value': value
         }
-
         return self.client.send(body)
 
     def delete(self, domain, _id):
@@ -106,15 +118,21 @@ class Cns:
 
 if __name__ == '__main__':
     # Create your secret_id and secret_key at https://console.cloud.tencent.com/cam/capi
-    secret_id = 'your secret_id'
-    secret_key = 'your secret_key'
+
+    _, option, domain, name, value,secret_id, secret_key = sys.argv  # pylint: disable=all
+
+    domain = Cns.getDomain(domain)
+    if domain[0]=="":
+        selfdomain =  name
+    else:
+        selfdomain = name + "." + domain[0]
+
     cns = Cns(secret_id, secret_key)
-
-    _, option, domain, name, value = sys.argv  # pylint: disable=all
-
     if option == 'add':
-        cns.create(domain, name, 'TXT', value)
-    elif option == 'delete':
-        for record in cns.list(domain)['data']['records']:
-            if record['name'] == name and record['value'] == value:
-                cns.delete(domain, record['id'])
+        result=(cns.create(domain[1], selfdomain, 'TXT', value))
+    elif option == 'clean':
+        for record in cns.list(domain[1],selfdomain)['data']['records']:
+            #print (record['name'],record['id'] )
+            result= (cns.delete(domain[1], record['id']))
+	    #print (result["message"])
+    #print(result)

@@ -24,12 +24,11 @@ PATH=$(cd `dirname $0`; pwd)
 # 第二个参数：使用那个 DNS 的 API
 # 第三个参数：action or clean
 plang=$1 #python or php 
-pdns=$2
+pdns=$2 #aly or txy
 paction=$3 #add or clean
 
 #PHP 命令行路径，如果有需要可以修改 
 phpcmd="/usr/bin/php"
-
 #Python 命令行路径，如果有需要可以修改 
 pythoncmd="/usr/bin/python"
 
@@ -65,19 +64,19 @@ case $plang in
 	
 	cmd=$pythoncmd
 	if [[ "$pdns" == "aly" ]];  then
-                dnsapi=$PATH"/python-version/alydns.py"
-		 key=$ALY_KEY
-                token=$ALY_TOKEN
+			dnsapi=$PATH"/python-version/alydns.py"
+			key=$ALY_KEY
+			token=$ALY_TOKEN
         elif [[ "$pdns" == "txy" ]] ;then
-		                key=$TXY_KEY
-                token=$TXY_TOKEN
-        	echo "目前不支持python版本的非阿里云DNS处理"
+			dnsapi=$PATH"/python-version/txydns.py"
+			key=$TXY_KEY
+			token=$TXY_TOKEN
 		exit
 	else
-		                key=$GODADDY_KEY
-                token=$GODADDY_TOKEN
-        	echo "目前不支持python版本的非阿里云DNS处理"
-               exit
+		key=$GODADDY_KEY
+		token=$GODADDY_TOKEN
+		echo "目前不支持python版本的非阿里云DNS处理"
+		exit
         fi
         ;;	
 esac
