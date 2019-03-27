@@ -1,5 +1,6 @@
 #!/bin/bash
 
+
 #ywdblog@gmail.com 欢迎关注我的书《深入浅出HTTPS：从原理到实战》
 
 #填写腾讯云的AccessKey ID及AccessKey Secret
@@ -22,7 +23,7 @@ PATH=$(cd `dirname $0`; pwd)
 # 命令行参数
 # 第一个参数：使用什么语言环境
 # 第二个参数：使用那个 DNS 的 API
-# 第三个参数：action or clean
+# 第三个参数：add or clean
 plang=$1 #python or php 
 pdns=$2 #aly or txy
 paction=$3 #add or clean
@@ -81,12 +82,11 @@ case $plang in
         ;;	
 esac
 
-#print ($cmd)
+
 $cmd $dnsapi $paction $CERTBOT_DOMAIN "_acme-challenge" $CERTBOT_VALIDATION $key $token >>"/var/log/certd.log"
 
-   if [[ "$paction" == "add" ]]; then
+if [[ "$paction" == "add" ]]; then
         # DNS TXT 记录刷新时间
-        /bin/sleep 10
-    fi
-
+        /bin/sleep 20
+fi
 

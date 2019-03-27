@@ -40,9 +40,9 @@ $ chmod 0777 au.sh
 	- au.sh php txy add/clean：表示选择PHP命令行，操作腾讯云DNS，增加/清空DNS。
 - Python
 	- au.sh python aly add/clean：表示选择Python命令行，操作阿里云DNS，增加/清空DNS。
-	- au.sh python txy add/clean：表示选择ython命令行，操作腾讯云DNS，增加/清空DNS。(需要安装第三方库，pip install requests 或 pip3 install requests，后续我会优化使用python内建库)
+	- au.sh python txy add/clean：表示选择Python命令行，操作腾讯云DNS，增加/清空DNS。(需要安装第三方库，pip install requests 或 pip3 install requests，后续我会优化使用python内建库)
 
-这四种运行环境和场景什么意思呢？就是可根据自己服务器环境和域名服务商选择任意一个 hook shell（包含相应参数）。
+根据自己服务器环境和域名服务商选择任意一个 hook shell（包含相应参数），具体使用见下面。
 
 3：申请证书
  
@@ -86,8 +86,6 @@ $ ./certbot-auto certonly  -d *.example.com -d *.example.org -d www.example.cn  
 ```
 
 ### 续期证书
-
-**注意，根据自己的环境和DNS厂商选择 hook 和参数**
 
 1：对机器上所有证书 renew
 
