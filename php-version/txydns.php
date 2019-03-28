@@ -235,7 +235,7 @@ class TxyDns {
 
 //签名
     private function formatSignString($host, $path, $param, $requestMethod) {
-        $tmpParam = [];
+        $tmpParam = array();
         ksort($param);
         foreach ($param as $key => $value) {
             array_push($tmpParam, str_replace("_", ".", $key) . "=" . $value);

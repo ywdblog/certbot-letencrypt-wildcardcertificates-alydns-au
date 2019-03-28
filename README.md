@@ -35,10 +35,10 @@ $ chmod 0777 au.sh
 
 目前该工具支持四种运行环境和场景，通过 hook 文件和参数来调用：
 
-- PHP
+- PHP(>4以上版本均可)
 	- au.sh php aly add/clean：表示选择PHP命令行，操作阿里云DNS，增加/清空DNS。
 	- au.sh php txy add/clean：表示选择PHP命令行，操作腾讯云DNS，增加/清空DNS。
-- Python
+- Python(支持2.7和3.7版本)
 	- au.sh python aly add/clean：表示选择Python命令行，操作阿里云DNS，增加/清空DNS。
 	- au.sh python txy add/clean：表示选择Python命令行，操作腾讯云DNS，增加/清空DNS。(需要安装第三方库，pip install requests 或 pip3 install requests，后续我会优化使用python内建库)
 
