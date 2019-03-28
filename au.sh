@@ -51,7 +51,7 @@ case $plang in
 		key=$ALY_KEY		
 		token=$ALY_TOKEN
 	elif [[ "$pdns" == "txy" ]] ;then 
-		dnsapi="$path/php-version/txydns.php"
+		dnsapi="$PATH/php-version/txydns.php"
 		key=$TXY_KEY
 		token=$TXY_TOKEN
 	else
