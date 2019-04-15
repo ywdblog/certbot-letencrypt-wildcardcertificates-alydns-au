@@ -72,7 +72,6 @@ case $plang in
 			dnsapi=$PATH"/python-version/txydns.py"
 			key=$TXY_KEY
 			token=$TXY_TOKEN
-		exit
 	else
 		key=$GODADDY_KEY
 		token=$GODADDY_TOKEN
