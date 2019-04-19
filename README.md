@@ -30,14 +30,16 @@ $ chmod 0777 au.sh
 
 - ALY_KEY 和 ALY_TOKEN：阿里云 [API key 和 Secrec 官方申请文档](https://help.aliyun.com/knowledge_detail/38738.html)。
 - TXY_KEY 和 TXY_TOKEN：腾讯云 [API 密钥官方申请文档](https://console.cloud.tencent.com/cam/capi)。
+- GODADDY_KEY 和 GODADDY_TOKEN：GoDaddy [API 密钥官方申请文档](https://developer.godaddy.com/getstarted)。
 
 （2）选择运行环境
 
-目前该工具支持四种运行环境和场景，通过 hook 文件和参数来调用：
+目前该工具支持五种运行环境和场景，通过 hook 文件和参数来调用：
 
 - PHP(>4以上版本均可)
 	- au.sh php aly add/clean：表示选择PHP命令行，操作阿里云DNS，增加/清空DNS。
 	- au.sh php txy add/clean：表示选择PHP命令行，操作腾讯云DNS，增加/清空DNS。
+	- au.sh php godaddy add/clean：表示选择PHP命令行，操作GoDaddy DNS，增加/清空DNS。
 - Python(支持2.7和3.7版本)
 	- au.sh python aly add/clean：表示选择Python命令行，操作阿里云DNS，增加/清空DNS。
 	- au.sh python txy add/clean：表示选择Python命令行，操作腾讯云DNS，增加/清空DNS。(需要安装第三方库，pip install requests 或 pip3 install requests，后续我会优化使用python内建库)
@@ -128,6 +130,12 @@ $ ./certbot-auto renew --cert-name simplehttps.com  --manual-auth-hook "/脚本�
 ```
 
 **注意：只有单机建议这样运行，如果要将证书同步到多台web服务器，需要有别的方案**
+
+### 贡献
+
+- 阿里云 python 版 @Duke-Wu
+- 腾讯云 python 版 @akgnah         
+- GoDaddy PHP 版 wlx_1990 （2019-01-11）
 
 ### 其他
 

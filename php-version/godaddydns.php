@@ -1,37 +1,61 @@
 <?php
 date_default_timezone_set("GMT");
 
-//accessKeyId 和 accessSecrec 在 https://developer.godaddy.com/getstarted 申请 
-define("accessKeyId", "");
-define("accessSecrec", "");
+# 第一个参数是 action，代表 (add/clean) 
+# 第二个参数是域名 
+# 第三个参数是主机名（第三个参数+第二个参数组合起来就是要添加的 TXT 记录）
+# 第四个参数是 TXT 记录值
+# 第五个参数是 APPKEY
+# 第六个参数是 APPTOKEN
 
-$type = 'TXT';
-
-$domainarray = GodaddyDns::getDomain($argv[1]);
-//证书申请域名
-$selfdomain  = ($domainarray[0] == "") ? $argv[2] : $argv[2].".".$domainarray[0];
-//根域名
-$domain      = $domainarray[1];
-
-$obj = new GodaddyDns(accessKeyId, accessSecrec, $domain);
-
-$data = $obj->GetDNSRecord($domain, $type);
-$code = $data['httpCode'];
-if ($code != 200) {
-    echo 'code='.$code;
-    echo '<br/>';
-    echo $data['result'];
+echo "域名 API 调用开始\n";
+print_r($argv);
+if (count($argv) < 7) {
+    echo "参数有误\n";
     exit;
 }
-$data_obj = json_decode($data['result']);
-$count    = count($data_obj);
-if ($count <= 0) {
+echo $argv[1]."-".$argv[2]."-".$argv[3]."-".$argv[4]."-".$argv[5]."-".$argv[6]."\n";
 
-    $r = $obj->CreateDNSRecord($domain, $selfdomain, $argv[3], $type);
-} else {
+$domainarray = GodaddyDns::getDomain($argv[2]);
+$selfdomain  = ($domainarray[0] == "") ? $argv[3] : $argv[3].".".$domainarray[0];
 
-    $r = $obj->UpdateDNSRecord($domain, $selfdomain, $argv[3], $type); //$domain,$name,$value,$recordType='TXT
+/*
+
+  $obj = new GodaddyDns($argv[5], $argv[6], $domainarray[1]);
+  $data = $obj->getDomains();
+  $data_obj = json_decode($data['result']);
+  $code = $data['httpCode'];
+  test :php  godaddydns.php add yudadan.com  v k
+ */
+
+$obj = new GodaddyDns($argv[5], $argv[6], $domainarray[1]);
+
+switch ($argv[1]) {
+    case "clean":
+        //api 不包含该操作
+        break;
+
+    case "add":
+        $data     = $obj->GetDNSRecord($domainarray[1], $selfdomain);
+        $data_obj = json_decode($data['result']);
+        $count    = count($data_obj);
+        if ($count > 0) {
+
+            $data = $obj->UpdateDNSRecord($domainarray[1], $selfdomain, $argv[4]);
+        } else {
+            $data = $obj->CreateDNSRecord($domainarray[1], $selfdomain, $argv[4]);
+        }
+        if ($data["httpCode"] != 200) {
+            $message = json_decode($data["result"], true);
+            echo "域名处理失败-".$message["message"];
+            exit;
+        }
+        break;
 }
+
+echo "域名 API 调用结束\n";
+
+//    $r = $obj->UpdateDNSRecord($domain, $selfdomain, $argv[3], $type);
 
 class GodaddyDns
 {
@@ -50,6 +74,7 @@ class GodaddyDns
     /*
       根据域名返回主机名和二级域名
      */
+
     public static function getDomain($domain)
     {
 
@@ -73,7 +98,7 @@ class GodaddyDns
         $arr[] = ".link";
         $arr[] = ".uk";
         $arr[] = ".hk";
- 
+
         //二级域名
         $seconddomain = "";
         //子域名
@@ -127,9 +152,27 @@ class GodaddyDns
         return json_decode($msg, true);
     }
 
-    public function GetDNSRecord($domain, $recordType = 'TXT')
+    public function getDomains()
     {
-        $url    = "https://api.godaddy.com/v1/domains/$domain/records/$recordType/_acme-challenge";
+
+        $url    = "https://api.godaddy.com/v1/domains";
+        $header = ['accept: application/json', 'authorization:sso-key '.$this->accessKeyId.':'.$this->accessSecrec];
+        return $this->curl($url, $header);
+    }
+
+    public function delRecords($domain)
+    {
+
+        $url    = "https://api.godaddy.com/v1/domains/$domain";
+        $header = ['accept: application/json', 'Content-Type: application/json',
+            'authorization:sso-key '.$this->accessKeyId.':'.$this->accessSecrec];
+
+        return $this->curl($url, $header, '', 'delete');
+    }
+
+    public function GetDNSRecord($domain, $record, $recordType = 'TXT')
+    {
+        $url    = "https://api.godaddy.com/v1/domains/$domain/records/$recordType/$record";
         $header = ['accept: application/json', 'authorization:sso-key '.$this->accessKeyId.':'.$this->accessSecrec];
         return $this->curl($url, $header);
     }
