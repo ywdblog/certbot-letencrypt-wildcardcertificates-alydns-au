@@ -3,7 +3,7 @@
 
 #ywdblog@gmail.com 欢迎关注我的书《深入浅出HTTPS：从原理到实战》
 
-#填写腾讯云的AccessKey ID及AccessKey Secret
+#填写阿里云的AccessKey ID及AccessKey Secret
 #如何申请见https://help.aliyun.com/knowledge_detail/38738.html
 ALY_KEY=""
 ALY_TOKEN=""
