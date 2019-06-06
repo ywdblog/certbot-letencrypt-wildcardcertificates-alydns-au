@@ -130,10 +130,11 @@ $ ./certbot-auto renew --cert-name simplehttps.com  --manual-auth-hook "/脚本�
 
 ```
 # 注意只有成功renew证书，才会重新启动nginx
-1 1 */1 * * root certbot-auto renew --manual --preferred-challenges dns -deploy-hook  "service nginx restart" --manual-auth-hook "/脚本目录/au.sh php aly add" --manual-cleanup-hook "/脚本目录/au.sh php aly clean" 
+1 1 */1 * * root certbot-auto renew --manual --preferred-challenges dns --deploy-hook  "service nginx restart" --manual-auth-hook "/脚本目录/au.sh php aly add" --manual-cleanup-hook "/脚本目录/au.sh php aly clean" 
 ```
 
-**注意：只有单机建议这样运行，如果要将证书同步到多台web服务器，需要有别的方案**
+
+**注意：只有单机建议这样运行，如果要将证书同步到多台web服务器，需要有别的方案，目前在开发中，主要目的就是同步证书到集群服务器上**
 
 ### 贡献
 
