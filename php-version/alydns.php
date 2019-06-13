@@ -140,8 +140,9 @@ class AliDns
                 $s            = explode(".", substr($domain, 0, $pos));
                 $seconddomain = $s[count($s) - 1].$rootdomain;
                 for ($i = 0; $i < count($s) - 1; $i++)
-                    $selfdomain .= $s[$i];
-                break;
+                    $selfdomain .= $s[$i] . ".";
+		$selfdomain = substr($selfdomain,0,strlen($selfdomain)-1);
+		break;
             }
         }
         //echo $seconddomain ;exit;
