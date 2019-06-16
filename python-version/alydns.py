@@ -209,15 +209,15 @@ if __name__ == '__main__':
   
     if cmd == "add":
         result = (domain.add_domain_record("TXT",selfdomain, certbot_validation))
-        
-	if "Code" in result:
-		print ("aly dns 域名增加失败-"+str(result["Code"]) + ":" + str(result["Message"]))
+        if "Code" in result:
+            print ("aly dns 域名增加失败-"+str(result["Code"]) + ":" + str(result["Message"]))
+            sys.exit(0)
     elif cmd == "clean":
         data = domain.describe_domain_records()
-	if "Code" in data:
-		print ("aly dns 域名删除失败-"+str(data["Code"]) + ":" + str(data["Message"]))
-		sys.exit(0)
-	record_list = data["DomainRecords"]["Record"]
+        if "Code" in data:
+            print ("aly dns 域名删除失败-"+str(data["Code"]) + ":" + str(data["Message"]))
+            sys.exit(0)
+        record_list = data["DomainRecords"]["Record"]
         if record_list:
             for item in record_list:
                 if (item['RR'] == selfdomain):
