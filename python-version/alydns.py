@@ -3,7 +3,6 @@
 import base64
 import urllib
 import hmac
-import pytz
 import datetime
 import random
 import string
@@ -63,8 +62,10 @@ class AliDns:
         例如，2015-01-09T12:00:00Z（为UTC时间2015年1月9日12点0分0秒）
         :return:
         """
-        utc_tz = pytz.timezone('UTC')
-        time = datetime.datetime.now(tz=utc_tz).strftime('%Y-%m-%dT%H:%M:%SZ')
+        #utc_tz = pytz.timezone('UTC')
+        #time = datetime.datetime.now(datetime.timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ')
+        #time = datetime.datetime.now(tz=utc_tz).strftime('%Y-%m-%dT%H:%M:%SZ')
+        time=datetime.datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%SZ')
         return time
 
     @staticmethod
