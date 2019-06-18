@@ -4,13 +4,19 @@ import hmac
 import time
 import random
 import hashlib
-import binascii
-#第三方包,需要安装
-# python2:pip install requests
-# python3:pip3 install requests
-import requests
+import json
+import urllib
+import base64
 
-# @akgnah https://github.com/akgnah
+pv = "python2"
+if sys.version_info[0] < 3:
+    from urllib import quote
+    from urllib import urlencode
+else:
+    from urllib.parse import quote
+    from urllib.parse import urlencode
+    from urllib import request
+    pv = "python3"
 
 
 class Client(object):
@@ -20,18 +26,13 @@ class Client(object):
         self.host = host
         self.uri = uri
         self.params = params
-        if sys.version_info[0] > 2:
-            self.Py3 = True
-            self.secret_key = bytes(self.secret_key, 'utf-8')
-        else:
-            self.Py3 = False
 
     def public_params(self):
         params = {
             'Nonce': random.randint(1, 9999),
             'SecretId': self.secret_id,
             'SignatureMethod': 'HmacSHA1',
-            'Timestamp': int(time.time()), 
+            'Timestamp': int(time.time()),
         }
         params.update(self.params)
 
@@ -48,36 +49,57 @@ class Client(object):
         ps = '&'.join('%s=%s' % (k, p[k]) for k in sorted(p))
 
         msg = '%s%s%s?%s' % (method.upper(), self.host, self.uri, ps)
-        if self.Py3:
-            msg = bytes(msg, 'utf-8')
 
+        if pv == "python2":
+            h = hmac.new(self.secret_key, msg, digestmod=hashlib.sha1)
+            signature = base64.encodestring(h.digest()).strip()
+        else:
+            h = hmac.new(self.secret_key.encode('utf-8'),
+                         msg.encode('utf-8'), digestmod=hashlib.sha1)
+            signature = base64.encodebytes(h.digest()).strip()
+
+        '''
         hashed = hmac.new(self.secret_key, msg, hashlib.sha1)
         base64 = binascii.b2a_base64(hashed.digest())[:-1]
-        if self.Py3:
-            base64 = base64.decode()
-
-        params['Signature'] = base64
-
+        '''
+        params['Signature'] = signature
         return params
 
     def send(self, params, method='GET'):
         params = self.sign(params, method)
         req_host = 'https://{}{}'.format(self.host, self.uri)
+        url = req_host + "?" + urlencode(params)
+
+        if pv == "python2":
+            f = urllib.urlopen(url)
+            result = f.read().decode('utf-8')
+            # print(result)
+            return json.loads(result)
+        else:
+            req = request.Request(url)
+            with request.urlopen(req) as f:
+                result = f.read().decode('utf-8')
+                #print(result)
+                return json.loads(result)
+        '''
+        第三方包 requests 
         if method == 'GET':
             resp = requests.get(req_host, params=params)
         else:
             resp = requests.post(req_host, data=params)
 
         return resp.json()
-
+        '''
 
 # View details at https://cloud.tencent.com/document/product/302/4032
+
+
 class Cns:
     def __init__(self, secret_id, secret_key):
         host, uri = 'cns.api.qcloud.com', '/v2/index.php'
         self.client = Client(secret_id, secret_key, host, uri)
 
-    def list(self, domain,subDomain):
+    def list(self, domain, subDomain):
         body = {
             'Action': 'RecordList',
             'domain': domain,
@@ -90,10 +112,10 @@ class Cns:
     def getDomain(domain):
         domain_parts = domain.split('.')
         if len(domain_parts) > 2:
-            rootdomain='.'.join(domain_parts[-(2 if domain_parts[-1] in {"co.jp","com.tw","net","com","com.cn","org","cn","gov","net.cn","io","top","me","int","edu","link"} else 3):])
-            selfdomain=domain.split(rootdomain)[0]
-            return (selfdomain[0:len(selfdomain)-1],rootdomain)
-        return ("",domain)
+            rootdomain = '.'.join(domain_parts[-(2 if domain_parts[-1] in {"co.jp", "com.tw", "net", "com", "com.cn", "org", "cn", "gov", "net.cn", "io", "top", "me", "int", "edu", "link"} else 3): ])
+            selfdomain = domain.split(rootdomain)[0]
+            return (selfdomain[0:len(selfdomain)-1], rootdomain)
+        return ("", domain)
 
     def create(self, domain, name, _type, value):
         body = {
@@ -119,20 +141,20 @@ class Cns:
 if __name__ == '__main__':
     # Create your secret_id and secret_key at https://console.cloud.tencent.com/cam/capi
 
-    _, option, domain, name, value,secret_id, secret_key = sys.argv  # pylint: disable=all
+    _, option, domain, name, value, secret_id, secret_key = sys.argv  # pylint: disable=all
 
     domain = Cns.getDomain(domain)
-    if domain[0]=="":
-        selfdomain =  name
+    if domain[0] == "":
+        selfdomain = name
     else:
         selfdomain = name + "." + domain[0]
 
     cns = Cns(secret_id, secret_key)
     if option == 'add':
-        result=(cns.create(domain[1], selfdomain, 'TXT', value))
+        result = (cns.create(domain[1], selfdomain, 'TXT', value))
+        print (result)
     elif option == 'clean':
-        for record in cns.list(domain[1],selfdomain)['data']['records']:
+        for record in cns.list(domain[1], selfdomain)['data']['records']:
             #print (record['name'],record['id'] )
-            result= (cns.delete(domain[1], record['id']))
+            result = (cns.delete(domain[1], record['id']))
 	    #print (result["message"])
-    #print(result)

@@ -42,9 +42,9 @@ $ chmod 0777 au.sh
 	- au.sh php aly add/clean：表示选择PHP命令行，操作阿里云DNS，增加/清空DNS。
 	- au.sh php txy add/clean：表示选择PHP命令行，操作腾讯云DNS，增加/清空DNS。
 	- au.sh php godaddy add/clean：表示选择PHP命令行，操作GoDaddy DNS，增加/清空DNS。
-- Python(支持2.7和3.7版本)
+- Python(支持2.7和3.7，无需任何第三方库)
 	- au.sh python aly add/clean：表示选择Python命令行，操作阿里云DNS，增加/清空DNS。
-	- au.sh python txy add/clean：表示选择Python命令行，操作腾讯云DNS，增加/清空DNS。(需要安装第三方库，pip install requests 或 pip3 install requests，后续我会优化使用python内建库)
+	- au.sh python txy add/clean：表示选择Python命令行，操作腾讯云DNS，增加/清空DNS。
 
 根据自己服务器环境和域名服务商选择任意一个 hook shell（包含相应参数），具体使用见下面。
 
