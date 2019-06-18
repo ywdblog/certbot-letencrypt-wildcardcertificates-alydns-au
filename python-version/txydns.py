@@ -18,7 +18,6 @@ else:
     from urllib import request
     pv = "python3"
 
-
 class Client(object):
     def __init__(self, secret_id, secret_key, host, uri, **params):
         self.secret_id = secret_id
@@ -73,26 +72,12 @@ class Client(object):
         if pv == "python2":
             f = urllib.urlopen(url)
             result = f.read().decode('utf-8')
-            # print(result)
             return json.loads(result)
         else:
             req = request.Request(url)
             with request.urlopen(req) as f:
                 result = f.read().decode('utf-8')
-                #print(result)
                 return json.loads(result)
-        '''
-        第三方包 requests 
-        if method == 'GET':
-            resp = requests.get(req_host, params=params)
-        else:
-            resp = requests.post(req_host, data=params)
-
-        return resp.json()
-        '''
-
-# View details at https://cloud.tencent.com/document/product/302/4032
-
 
 class Cns:
     def __init__(self, secret_id, secret_key):
@@ -152,7 +137,6 @@ if __name__ == '__main__':
     cns = Cns(secret_id, secret_key)
     if option == 'add':
         result = (cns.create(domain[1], selfdomain, 'TXT', value))
-        print (result)
     elif option == 'clean':
         for record in cns.list(domain[1], selfdomain)['data']['records']:
             #print (record['name'],record['id'] )
