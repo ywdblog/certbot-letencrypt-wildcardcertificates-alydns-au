@@ -39,12 +39,13 @@ $ chmod 0777 au.sh
 目前该工具支持五种运行环境和场景，通过 hook 文件和参数来调用：
 
 - PHP(>4以上版本均可)
-	- au.sh php aly add/clean：表示选择PHP命令行，操作阿里云DNS，增加/清空DNS。
-	- au.sh php txy add/clean：表示选择PHP命令行，操作腾讯云DNS，增加/清空DNS。
-	- au.sh php godaddy add/clean：表示选择PHP命令行，操作GoDaddy DNS，增加/清空DNS。
+	- au.sh php aly add/clean：PHP操作阿里云DNS，增加/清空DNS。
+	- au.sh php txy add/clean：PHP操作腾讯云DNS，增加/清空DNS。
+	- au.sh php godaddy add/clean：PHP操作GoDaddy DNS，增加/清空DNS。
 - Python(支持2.7和3.7，无需任何第三方库)
-	- au.sh python aly add/clean：表示选择Python命令行，操作阿里云DNS，增加/清空DNS。
-	- au.sh python txy add/clean：表示选择Python命令行，操作腾讯云DNS，增加/清空DNS。
+	- au.sh python aly add/clean：Python操作阿里云DNS，增加/清空DNS。
+	- au.sh python txy add/clean：Python操作腾讯云DNS，增加/清空DNS。
+    - au.sh python godaddy add/clean：Python操作GoDaddy DNS，增加/清空DNS。
 
 根据自己服务器环境和域名服务商选择任意一个 hook shell（包含相应参数），具体使用见下面。
 
@@ -152,4 +153,10 @@ $ ./certbot-auto renew --cert-name simplehttps.com  --manual-auth-hook "/脚本�
 《深入浅出HTTPS：从原理到实战》二维码：
 
 ![深入浅出HTTPS：从原理到实战](https://notes.newyingyong.cn/static/image/httpsbook/httpsbook-small-jd.jpg)
+
+大家如果觉得这工程还行，欢迎金钱鼓励我哈，支付宝扫码就可以了，谢谢：
+
+![深入浅出HTTPS：从原理到实战](https://notes.newyingyong.cn/static/image/httpsbook/zfb.jpg)
+
+ 
  

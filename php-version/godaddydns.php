@@ -36,15 +36,15 @@ switch ($argv[1]) {
         break;
 
     case "add":
-        $data     = $obj->GetDNSRecord($domainarray[1], $selfdomain);
-        $data_obj = json_decode($data['result']);
-        $count    = count($data_obj);
-        if ($count > 0) {
+        //$data     = $obj->GetDNSRecord($domainarray[1], $selfdomain);
+        //$data_obj = json_decode($data['result']);
+        //$count    = count($data_obj);
+        //if ($count > 0) {
 
-            $data = $obj->UpdateDNSRecord($domainarray[1], $selfdomain, $argv[4]);
-        } else {
+        //    $data = $obj->UpdateDNSRecord($domainarray[1], $selfdomain, $argv[4]);
+        //} else {
             $data = $obj->CreateDNSRecord($domainarray[1], $selfdomain, $argv[4]);
-        }
+        //}
         if ($data["httpCode"] != 200) {
             $message = json_decode($data["result"], true);
             echo "域名处理失败-".$message["message"];
