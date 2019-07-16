@@ -17,7 +17,7 @@ certbot 提供了一个 hook，可以编写一个 Shell 脚本，让脚本调用
 1：下载
 
 ```
-$ git clone https://github.com/ywdblog/certbot-letencrypt-wildcardcertificates-alydns-au
+$ git clone https://github.com/ywdblog/certbot-letencrypt-wildcardcertificates-alydns-au.git
 
 $ cd certbot-letencrypt-wildcardcertificates-alydns-au
 
