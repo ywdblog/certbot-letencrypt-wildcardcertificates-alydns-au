@@ -131,6 +131,7 @@ class TxyDns {
         $arr[] = ".me";
         $arr[] = ".int";
         $arr[] = ".edu";
+	$arr[] = ".shop";
         //二级域名
         $seconddomain = "";
         //子域名
