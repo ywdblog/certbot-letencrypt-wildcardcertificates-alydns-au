@@ -98,6 +98,7 @@ class GodaddyDns
         $arr[] = ".link";
         $arr[] = ".uk";
         $arr[] = ".hk";
+	$arr[] = ".shop";
 
         //二级域名
         $seconddomain = "";
