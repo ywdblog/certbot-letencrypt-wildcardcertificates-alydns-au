@@ -1,7 +1,9 @@
 <?php
-
 date_default_timezone_set("GMT");
 
+$dir = dirname(dirname(__FILE__));
+#根域名列表文件，如果自己的根域名不存在该文件中，可自行添加
+$domainfile = $dir . DIRECTORY_SEPARATOR . "domain.ini";
 
 /*
   $obj = new TxyDns(txyaccessKeyId, APPKEY, APPTOKEN);
@@ -110,27 +112,15 @@ class TxyDns {
 
         //常见根域名 【https://en.wikipedia.org/wiki/List_of_Internet_top-level_domains】
         // 【http://www.seobythesea.com/2006/01/googles-most-popular-and-least-popular-top-level-domains/】
+	global $domainfile;
+	$tmp = file($domainfile);
+	$arr = array();
+	foreach ($tmp as $k=>$v) {
+		$v = trim($v);
+		if ($v!="")
+			$arr[]= "." . $v;
+	}
 
-        $arr[] = ".uk";
-        $arr[] = ".hk";
-        $arr[] = ".net";
-        $arr[] = ".com";
-        $arr[] = ".edu";
-        $arr[] = ".mil";
-        $arr[] = ".com.cn";
-        $arr[] = ".org";
-        $arr[] = ".cn";
-        $arr[] = ".gov";
-        $arr[] = ".net.cn";
-        $arr[] = ".io";
-        $arr[] = ".co.jp";
-        $arr[] = ".com.tw";
-        $arr[] = ".info";
-        $arr[] = ".io";
-        $arr[] = ".top";
-        $arr[] = ".me";
-        $arr[] = ".int";
-        $arr[] = ".edu";
         //二级域名
         $seconddomain = "";
         //子域名

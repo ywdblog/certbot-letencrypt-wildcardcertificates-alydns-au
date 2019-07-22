@@ -7,6 +7,7 @@ import hashlib
 import json
 import urllib
 import base64
+import os
 
 pv = "python2"
 if sys.version_info[0] < 3:
@@ -96,8 +97,17 @@ class Cns:
     @staticmethod
     def getDomain(domain):
         domain_parts = domain.split('.')
+ 
         if len(domain_parts) > 2:
-            rootdomain = '.'.join(domain_parts[-(2 if domain_parts[-1] in {"co.jp", "com.tw", "net", "com", "com.cn", "org", "cn", "gov", "net.cn", "io", "top", "me", "int", "edu", "link"} else 3): ])
+            dirpath = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
+            domainfile = dirpath + "/domain.ini"
+            domainarr = []
+            with open(domainfile) as f:
+                for line in f:
+                    val = line.strip()
+                    domainarr.append(val)
+
+            rootdomain = '.'.join(domain_parts[-(2 if domain_parts[-1] in domainarr else 3): ])
             selfdomain = domain.split(rootdomain)[0]
             return (selfdomain[0:len(selfdomain)-1], rootdomain)
         return ("", domain)

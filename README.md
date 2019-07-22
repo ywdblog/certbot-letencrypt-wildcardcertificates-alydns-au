@@ -26,7 +26,11 @@ $ chmod 0777 au.sh
 
 2：配置
 
-（1）DNS API 密钥：
+（1）domain.ini
+
+如果domain.ini文件没有你的根域名，请自行添加。
+
+（2）DNS API 密钥：
 
 这个 API 密钥什么意思呢？由于需要通过 API 操作阿里云 DNS 或腾讯云 DNS 的记录，所以需要去域名服务商哪儿获取 API 密钥，然后配置在 au.sh 文件中:
 
@@ -34,7 +38,7 @@ $ chmod 0777 au.sh
 - TXY_KEY 和 TXY_TOKEN：腾讯云 [API 密钥官方申请文档](https://console.cloud.tencent.com/cam/capi)。
 - GODADDY_KEY 和 GODADDY_TOKEN：GoDaddy [API 密钥官方申请文档](https://developer.godaddy.com/getstarted)。
 
-（2）选择运行环境
+（3）选择运行环境
 
 目前该工具支持五种运行环境和场景，通过 hook 文件和参数来调用：
 
@@ -152,11 +156,4 @@ $ ./certbot-auto renew --cert-name simplehttps.com  --manual-auth-hook "/脚本�
 
 《深入浅出HTTPS：从原理到实战》二维码：
 
-![深入浅出HTTPS：从原理到实战](https://notes.newyingyong.cn/static/image/httpsbook/httpsbook-small-jd.jpg)
-
-大家如果觉得这工程还行，欢迎金钱鼓励我哈，支付宝扫码就可以了，谢谢：
-
-![深入浅出HTTPS：从原理到实战](https://notes.newyingyong.cn/static/image/httpsbook/zfb.jpg)
-
- 
- 
+![深入浅出HTTPS：从原理到实战](https://notes.newyingyong.cn/static/image/httpsbook/httpsbook-small-jd.jpg) 

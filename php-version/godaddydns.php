@@ -1,6 +1,10 @@
 <?php
 date_default_timezone_set("GMT");
 
+$dir = dirname(dirname(__FILE__));
+#根域名列表文件，如果自己的根域名不存在该文件中，可自行添加
+$domainfile = $dir . DIRECTORY_SEPARATOR . "domain.ini";
+
 # 第一个参数是 action，代表 (add/clean) 
 # 第二个参数是域名 
 # 第三个参数是主机名（第三个参数+第二个参数组合起来就是要添加的 TXT 记录）
@@ -81,23 +85,14 @@ class GodaddyDns
         //常见根域名 【https://en.wikipedia.org/wiki/List_of_Internet_top-level_domains】
         // 【http://www.seobythesea.com/2006/01/googles-most-popular-and-least-popular-top-level-domains/】
 
-        $arr[] = ".co.jp";
-        $arr[] = ".com.tw";
-        $arr[] = ".net";
-        $arr[] = ".com";
-        $arr[] = ".com.cn";
-        $arr[] = ".org";
-        $arr[] = ".cn";
-        $arr[] = ".gov";
-        $arr[] = ".net.cn";
-        $arr[] = ".io";
-        $arr[] = ".top";
-        $arr[] = ".me";
-        $arr[] = ".int";
-        $arr[] = ".edu";
-        $arr[] = ".link";
-        $arr[] = ".uk";
-        $arr[] = ".hk";
+	global $domainfile;
+	$tmp = file($domainfile);
+	$arr = array();
+	foreach ($tmp as $k=>$v) {
+		$v = trim($v);
+		if ($v!="")
+			$arr[]= "." . $v;
+	}
 
         //二级域名
         $seconddomain = "";

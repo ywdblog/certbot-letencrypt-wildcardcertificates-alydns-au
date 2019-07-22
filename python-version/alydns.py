@@ -8,6 +8,7 @@ import random
 import string
 import json
 import sys
+import os 
 
 pv = "python2"
 #python2
@@ -31,8 +32,20 @@ class AliDns:
     @staticmethod
     def getDomain(domain):
         domain_parts = domain.split('.')
+ 
+        
         if len(domain_parts) > 2:
-            rootdomain = '.'.join(domain_parts[-(2 if domain_parts[-1] in {"co.jp", "com.tw", "net", "com", "com.cn", "org", "cn", "gov", "net.cn", "io", "top", "me", "int", "edu", "link"} else 3):])
+            dirpath = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
+            domainfile = dirpath + "/domain.ini"
+            domainarr = []
+            with open(domainfile) as f:
+                for line in f:
+                    val = line.strip()
+                    domainarr.append(val)
+
+            #rootdomain = '.'.join(domain_parts[-(2 if domain_parts[-1] in {"co.jp", "com.tw", "net", "com", "com.cn", "org", "cn", "gov", "net.cn", "io", "top", "me", "int", "edu", "link"} else 3):])
+            rootdomain = '.'.join(domain_parts[-(2 if domain_parts[-1] in
+                                                 domainarr else 3):])
             selfdomain = domain.split(rootdomain)[0]
             return (selfdomain[0:len(selfdomain)-1], rootdomain)
         return ("", domain)
@@ -210,7 +223,7 @@ if __name__ == '__main__':
     file_name, cmd, certbot_domain, acme_challenge, certbot_validation, ACCESS_KEY_ID, ACCESS_KEY_SECRET = sys.argv
 
     certbot_domain = AliDns.getDomain(certbot_domain)
-    # print (certbot_domain)
+    #print (certbot_domain)
     if certbot_domain[0] == "":
             selfdomain = acme_challenge
     else:
