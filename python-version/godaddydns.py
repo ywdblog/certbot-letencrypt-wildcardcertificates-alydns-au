@@ -2,7 +2,7 @@
 
 import json
 import sys
-import os 
+import os
 
 class GodaddyDns:
     def __init__(self, access_key_id, access_key_secret, domain_name):
@@ -22,9 +22,8 @@ class GodaddyDns:
                     val = line.strip()
                     domainarr.append(val)
 
-            rootdomain = '.'.join(domain_parts[-(2 if domain_parts[-1] in domainarr else 3): ])
-            selfdomain = domain.split(rootdomain)[0]
-            return (selfdomain[0:len(selfdomain)-1], rootdomain)
+            index = -3 if '.'.join(domain_parts[-2:]).lower() in domainarr else -2
+            return ('.'.join(domain_parts[:index]), '.'.join(domain_parts[index:]))
         return ("", domain)
 
     def curl(self, url, data, method):
@@ -57,7 +56,7 @@ class GodaddyDns:
         else :
             import urllib.request
             from urllib.error import URLError, HTTPError
-            
+
             httpdata = json.dumps(data).encode('utf-8')
 
             req = urllib.request.Request(url=url, data=httpdata, method=method)

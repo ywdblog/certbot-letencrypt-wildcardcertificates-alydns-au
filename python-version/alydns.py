@@ -8,7 +8,7 @@ import random
 import string
 import json
 import sys
-import os 
+import os
 
 pv = "python2"
 #python2
@@ -32,8 +32,7 @@ class AliDns:
     @staticmethod
     def getDomain(domain):
         domain_parts = domain.split('.')
- 
-        
+
         if len(domain_parts) > 2:
             dirpath = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
             domainfile = dirpath + "/domain.ini"
@@ -43,11 +42,8 @@ class AliDns:
                     val = line.strip()
                     domainarr.append(val)
 
-            #rootdomain = '.'.join(domain_parts[-(2 if domain_parts[-1] in {"co.jp", "com.tw", "net", "com", "com.cn", "org", "cn", "gov", "net.cn", "io", "top", "me", "int", "edu", "link"} else 3):])
-            rootdomain = '.'.join(domain_parts[-(2 if domain_parts[-1] in
-                                                 domainarr else 3):])
-            selfdomain = domain.split(rootdomain)[0]
-            return (selfdomain[0:len(selfdomain)-1], rootdomain)
+            index = -3 if '.'.join(domain_parts[-2:]).lower() in domainarr else -2
+            return ('.'.join(domain_parts[:index]), '.'.join(domain_parts[index:]))
         return ("", domain)
 
     @staticmethod
