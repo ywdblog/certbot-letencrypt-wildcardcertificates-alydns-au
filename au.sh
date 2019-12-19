@@ -57,10 +57,13 @@ case $plang in
 		dnsapi="$PATH/php-version/txydns.php"
 		key=$TXY_KEY
 		token=$TXY_TOKEN
-	else
+	elif [[ "$pdns" == "godaddy" ]] ;then 
 		dnsapi="$PATH/php-version/godaddydns.php"
 		key=$GODADDY_KEY
 		token=$GODADDY_TOKEN
+	else
+		echo "Not support this dns services"
+		exit
 	fi
 	;;
 	
@@ -71,17 +74,19 @@ case $plang in
 		dnsapi=$PATH"/python-version/alydns.py"
 		key=$ALY_KEY
 		token=$ALY_TOKEN
-        elif [[ "$pdns" == "txy" ]] ;then
+    elif [[ "$pdns" == "txy" ]] ;then
 		dnsapi=$PATH"/python-version/txydns.py"
 		key=$TXY_KEY
 		token=$TXY_TOKEN
-	else
+	elif [[ "$pdns" == "godaddy" ]] ;then
 		dnsapi=$PATH"/python-version/godaddydns.py"
 		key=$GODADDY_KEY
 		token=$GODADDY_TOKEN
+	else 
+		echo "Not support this dns services"
 		exit
-        fi
-        ;;	
+	fi
+	;;	
 esac
 
 $cmd $dnsapi $paction $CERTBOT_DOMAIN "_acme-challenge" $CERTBOT_VALIDATION $key $token >>"/var/log/certd.log"
