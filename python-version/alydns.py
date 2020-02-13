@@ -8,7 +8,7 @@ import random
 import string
 import json
 import sys
-import os 
+import os
 
 pv = "python2"
 #python2
@@ -32,8 +32,8 @@ class AliDns:
     @staticmethod
     def getDomain(domain):
         domain_parts = domain.split('.')
- 
-        
+
+
         if len(domain_parts) > 2:
             dirpath = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
             domainfile = dirpath + "/domain.ini"
