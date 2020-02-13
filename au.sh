@@ -105,6 +105,7 @@ case $plang in
 		echo "Not support this dns services"
 		exit
 	fi
+	;;
   
 esac
 
