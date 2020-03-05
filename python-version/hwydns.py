@@ -45,31 +45,50 @@ class HwyDns:
     # @example hwydns.add_domain_record("example.com", "_acme-challenge", "123456", "TXT")
     def add_domain_record(self, domain, rr, value, _type = 'TXT'):
         zone_id = self.get_domain_zone_id(domain)
+        recordset_id = self.get_domain_recordset_id(domain, rr, _type)
 
         if not zone_id:
             return
-
-        self.__request('POST', '/v2/zones/%s/recordsets' % (zone_id), {
-            'name'      : '%s.%s.' % (rr, domain),
-            'type'      : _type,
-            'records'   : [ "\"%s\"" % (value) ]
-        })
+        if not recordset_id:
+            self.__request('POST', '/v2.1/zones/%s/recordsets' % (zone_id), {
+                'name'      : '%s.%s.' % (rr, domain),
+                'type'      : _type,
+                'records'   : [ "\"%s\"" % (value) ],
+                'ttl'       : '1'
+            })
+        else:
+            response=self.__request('GET','/v2.1/zones/%s/recordsets/%s' % (zone_id,recordset_id))
+            content = json.loads(response)
+            record_list=content['records']
+            record_list.append("\""+value+"\"")
+            self.__request('PUT', '/v2.1/zones/%s/recordsets/%s' % (zone_id,recordset_id), {
+                'records'   : record_list
+            })
 
     # @example hwydns.delete_domain_record("example.com", "_acme-challenge", "TXT")
-    def delete_domain_record(self, domain, rr, _type = 'TXT'):
+    def delete_domain_record(self, domain, rr, value, _type = 'TXT'):
         zone_id = self.get_domain_zone_id(domain)
         recordset_id = self.get_domain_recordset_id(domain, rr, _type)
 
         if not (zone_id and recordset_id):
             return
-
-        self.__request('DELETE', '/v2/zones/%s/recordsets/%s' % (zone_id, recordset_id))
+        
+        response=self.__request('GET','/v2.1/zones/%s/recordsets/%s' % (zone_id,recordset_id))
+        content = json.loads(response)
+        record_list=content['records']
+        if len(record_list)==1:
+            self.__request('DELETE', '/v2.1/zones/%s/recordsets/%s' % (zone_id, recordset_id))
+        else:
+            record_list.remove("\""+value+"\"")
+            self.__request('PUT', '/v2.1/zones/%s/recordsets/%s' % (zone_id,recordset_id), {
+                'records'   : record_list
+            })
 
     # @example hwydns.get_domain_record("example.com", "_acme-challenge", "TXT")
     def get_domain_record(self, domain, rr, _type = 'TXT'):
         try:
             full_domain = '.'.join([rr, domain])
-            response = self.__request('GET', '/v2/recordsets?type=%s&name=%s' % (_type, full_domain))
+            response = self.__request('GET', '/v2.1/recordsets?type=%s&name=%s' % (_type, full_domain))
             content = json.loads(response)
             return list(filter(lambda record: record['name'][:-1] == full_domain and record['type'] == _type, content['recordsets']))[0]
         except Exception as e:
@@ -227,6 +246,6 @@ if __name__ == '__main__':
     if 'add' == action:
         hwydns.add_domain_record(main_domain, subdomain, certbot_validation)
     elif 'clean' == action:
-        hwydns.delete_domain_record(main_domain, subdomain)
+        hwydns.delete_domain_record(main_domain, subdomain, certbot_validation)
 
     print('结束调用华为云 DNS API')
