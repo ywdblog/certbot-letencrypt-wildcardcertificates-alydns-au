@@ -59,8 +59,12 @@ class GodaddyDns:
             from urllib.error import URLError, HTTPError
             
             httpdata = json.dumps(data).encode('utf-8')
-
-            req = urllib.request.Request(url=url, data=httpdata, method=method)
+            
+            if method == "PATCH":
+                req = urllib.request.Request(url=url, data=httpdata, method=method)
+            elif method == "DELETE":
+                req = urllib.request.Request(url=url, method=method)
+            
             req.add_header('accept', 'application/json')
             req.add_header('Content-Type', 'application/json')
             key = "sso-key " + self.access_key_id + ':' + self.access_key_secret
@@ -90,10 +94,9 @@ class GodaddyDns:
         return self.curl(url, {}, "GET")
 
     def DeleteDNSRecord(self, name, recordType='TXT'):
-        '''
-        Godaddy DNS  没有提供删除DSN记录的API
-        '''
-        return True
+        url = "https://api.godaddy.com/v1/domains/" + \
+            self.domain_name + "/records/" + recordType + "/" + name
+        return self.curl(url, {}, "DELETE")
 
 file_name, cmd, certbot_domain, acme_challenge, certbot_validation, ACCESS_KEY_ID, ACCESS_KEY_SECRET = sys.argv
 
@@ -108,3 +111,5 @@ domain = GodaddyDns(ACCESS_KEY_ID, ACCESS_KEY_SECRET, certbot_domain[1])
 
 if cmd == "add":
     print(domain.CreateDNSRecord(selfdomain, certbot_validation))
+elif cmd == "clean"
+    domain.DeleteDNSRecord(selfdomain)
