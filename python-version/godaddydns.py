@@ -90,10 +90,9 @@ class GodaddyDns:
         return self.curl(url, {}, "GET")
 
     def DeleteDNSRecord(self, name, recordType='TXT'):
-        '''
-        Godaddy DNS  没有提供删除DSN记录的API
-        '''
-        return True
+        url = "https://api.godaddy.com/v1/domains/" + \
+            self.domain_name + "/records/" + recordType + "/" + name
+        return self.curl(url, {}, "DELETE")
 
 file_name, cmd, certbot_domain, acme_challenge, certbot_validation, ACCESS_KEY_ID, ACCESS_KEY_SECRET = sys.argv
 
