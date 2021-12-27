@@ -111,5 +111,5 @@ domain = GodaddyDns(ACCESS_KEY_ID, ACCESS_KEY_SECRET, certbot_domain[1])
 
 if cmd == "add":
     print(domain.CreateDNSRecord(selfdomain, certbot_validation))
-elif cmd == "clean"
+elif cmd == "clean":
     domain.DeleteDNSRecord(selfdomain)
