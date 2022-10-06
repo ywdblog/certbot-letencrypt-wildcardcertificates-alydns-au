@@ -14,6 +14,13 @@ certbot 提供了一个 hook，可以编写一个 Shell 脚本，让脚本调用
 
 **近期合并了几个PR，没有测试，有问题反馈给我，谢谢！**
 
+### Certbot安装
+
+如果已安装，忽略该步骤
+```shell
+$ sudo sh -c "$(curl -fsSL https://gist.githubusercontent.com/alanhg/b861c85afa1887daa053ad90fa930453/raw/b9abe224631981fafd184de4b5b87d3fe12d3eaa/install-package-certbot.sh)"
+```
+
 ### 自动申请通配符证书
 
 1：下载
@@ -62,7 +69,7 @@ $ chmod 0777 au.sh
 测试是否有错误：
 
 ```
-$ ./certbot-auto certonly  -d *.example.com --manual --preferred-challenges dns --dry-run  --manual-auth-hook "/脚本目录/au.sh php aly add" --manual-cleanup-hook "/脚本目录/au.sh php aly clean"
+$ certbot certonly  -d *.example.com --manual --preferred-challenges dns --dry-run  --manual-auth-hook "/脚本目录/au.sh php aly add" --manual-cleanup-hook "/脚本目录/au.sh php aly clean"
 ```
 
 **Debug：** 操作 DNS API 可能会遇到一系列问题，比如 API token 权限不足，遇到相关问题，可以查看 /var/log/certd.log。
@@ -79,7 +86,7 @@ $ ./certbot-auto certonly  -d *.example.com --manual --preferred-challenges dns 
 
 ```
 # 实际申请
-$ ./certbot-auto certonly  -d *.example.com --manual --preferred-challenges dns --manual-auth-hook "/脚本目录/au.sh php aly add" --manual-cleanup-hook "/脚本目录/au.sh php aly clean"
+$ certbot certonly  -d *.example.com --manual --preferred-challenges dns --manual-auth-hook "/脚本目录/au.sh php aly add" --manual-cleanup-hook "/脚本目录/au.sh php aly clean"
 ```
 
 参数解释（可以不用关心）：
@@ -95,7 +102,7 @@ $ ./certbot-auto certonly  -d *.example.com --manual --preferred-challenges dns 
 如果你想为多个域名申请通配符证书（合并在一张证书中，也叫做 **SAN 通配符证书**），直接输入多个 -d 参数即可，比如：
 
 ```
-$ ./certbot-auto certonly  -d *.example.com -d *.example.org -d www.example.cn  --manual --preferred-challenges dns  --dry-run --manual-auth-hook "/脚本目录/au.sh php aly add" --manual-cleanup-hook "/脚本目录/au.sh php aly clean"
+$ certbot certonly  -d *.example.com -d *.example.org -d www.example.cn  --manual --preferred-challenges dns  --dry-run --manual-auth-hook "/脚本目录/au.sh php aly add" --manual-cleanup-hook "/脚本目录/au.sh php aly clean"
 ```
 
 ### 续期证书
@@ -103,7 +110,7 @@ $ ./certbot-auto certonly  -d *.example.com -d *.example.org -d www.example.cn  
 1：对机器上所有证书 renew
 
 ```
-$ ./certbot-auto renew  --manual --preferred-challenges dns --manual-auth-hook "/脚本目录/au.sh php aly add" --manual-cleanup-hook "/脚本目录/au.sh php aly clean"
+$ certbot renew  --manual --preferred-challenges dns --manual-auth-hook "/脚本目录/au.sh php aly add" --manual-cleanup-hook "/脚本目录/au.sh php aly clean"
 ```
 
 2：对某一张证书进行续期
@@ -111,7 +118,7 @@ $ ./certbot-auto renew  --manual --preferred-challenges dns --manual-auth-hook "
 先看看机器上有多少证书：
 
 ```
-$ ./certbot-auto certificates
+$ certbot certificates
 ```
 
 可以看到很多证书，如图：
@@ -121,7 +128,7 @@ $ ./certbot-auto certificates
 记住证书名，比如 simplehttps.com，然后运行下列命令 renew：
 
 ```
-$ ./certbot-auto renew --cert-name simplehttps.com  --manual-auth-hook "/脚本目录/au.sh php aly add" --manual-cleanup-hook "/脚本目录/au.sh php aly clean"
+$ certbot renew --cert-name simplehttps.com  --manual-auth-hook "/脚本目录/au.sh php aly add" --manual-cleanup-hook "/脚本目录/au.sh php aly clean"
 ```
 
 ### 加入 crontab
@@ -130,14 +137,14 @@ $ ./certbot-auto renew --cert-name simplehttps.com  --manual-auth-hook "/脚本�
 
 ```
 #证书有效期<30天才会renew，所以crontab可以配置为1天或1周
-1 1 */1 * * root certbot-auto renew --manual --preferred-challenges dns  --manual-auth-hook "/脚本目录/au.sh php aly add" --manual-cleanup-hook "/脚本目录/au.sh php aly clean"
+1 1 */1 * * root certbot renew --manual --preferred-challenges dns  --manual-auth-hook "/脚本目录/au.sh php aly add" --manual-cleanup-hook "/脚本目录/au.sh php aly clean"
 ```
 
 如果是certbot 机器和运行web服务（比如 nginx，apache）的机器是同一台，那么成功renew证书后，可以启动对应的web 服务器，运行下列crontab :
 
 ```
 # 注意只有成功renew证书，才会重新启动nginx
-1 1 */1 * * root certbot-auto renew --manual --preferred-challenges dns --deploy-hook  "service nginx restart" --manual-auth-hook "/脚本目录/au.sh php aly add" --manual-cleanup-hook "/脚本目录/au.sh php aly clean"
+1 1 */1 * * root certbot renew --manual --preferred-challenges dns --deploy-hook  "service nginx restart" --manual-auth-hook "/脚本目录/au.sh php aly add" --manual-cleanup-hook "/脚本目录/au.sh php aly clean"
 ```
 
 
