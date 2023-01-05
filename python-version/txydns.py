@@ -20,11 +20,12 @@ else:
     pv = "python3"
 
 class Client(object):
-    def __init__(self, secret_id, secret_key, host, uri, **params):
+    def __init__(self, secret_id, secret_key, host, uri, api_version, **params):
         self.secret_id = secret_id
         self.secret_key = secret_key
         self.host = host
         self.uri = uri
+        self.api_version = api_version
         self.params = params
 
     def public_params(self):
@@ -33,6 +34,7 @@ class Client(object):
             'SecretId': self.secret_id,
             'SignatureMethod': 'HmacSHA1',
             'Timestamp': int(time.time()),
+            'Version': self.api_version
         }
         params.update(self.params)
 
@@ -82,14 +84,15 @@ class Client(object):
 
 class Cns:
     def __init__(self, secret_id, secret_key):
-        host, uri = 'cns.api.qcloud.com', '/v2/index.php'
-        self.client = Client(secret_id, secret_key, host, uri)
+        host, uri, api_version = 'dnspod.tencentcloudapi.com', '/', '2021-03-23'
+        self.client = Client(secret_id, secret_key, host, uri, api_version)
 
-    def list(self, domain, subDomain):
+    def list(self, domain, subDomain, recordType):
         body = {
-            'Action': 'RecordList',
-            'domain': domain,
-            'subDomain': subDomain
+            'Action': 'DescribeRecordList',
+            'Domain': domain,
+            'Subdomain': subDomain,
+            'RecordType': recordType
         }
 
         return self.client.send(body)
@@ -114,20 +117,20 @@ class Cns:
 
     def create(self, domain, name, _type, value):
         body = {
-            'Action': 'RecordCreate',
-            'domain': domain,
-            'subDomain': name,
-            'recordType': _type,
-            'recordLine': '默认',
-            'value': value
+            'Action': 'CreateRecord',
+            'Domain': domain,
+            'SubDomain': name,
+            'RecordType': _type,
+            'RecordLine': '默认',
+            'Value': value
         }
         return self.client.send(body)
 
     def delete(self, domain, _id):
         body = {
-            'Action': 'RecordDelete',
-            'domain': domain,
-            'recordId': _id
+            'Action': 'DeleteRecord',
+            'Domain': domain,
+            'RecordId': _id
         }
 
         return self.client.send(body)
@@ -146,9 +149,9 @@ if __name__ == '__main__':
 
     cns = Cns(secret_id, secret_key)
     if option == 'add':
-        result = (cns.create(domain[1], selfdomain, 'TXT', value))
+        result = cns.create(domain[1], selfdomain, 'TXT', value)
     elif option == 'clean':
-        for record in cns.list(domain[1], selfdomain)['data']['records']:
-            #print (record['name'],record['id'] )
-            result = (cns.delete(domain[1], record['id']))
-	    #print (result["message"])
+        result = cns.list(domain[1], selfdomain, 'TXT')
+        if 'RecordList' in result['Response']:
+            for record in result['Response']['RecordList']:
+                result2 = cns.delete(domain[1], record['RecordId'])
