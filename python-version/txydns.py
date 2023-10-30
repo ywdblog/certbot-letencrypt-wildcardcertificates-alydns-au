@@ -1,105 +1,92 @@
 # -*- coding: utf-8 -*-
 import sys
-import hmac
-import time
-import random
-import hashlib
-import json
-import urllib
-import base64
 import os
+import json
+from tencentcloud.common import credential
+from tencentcloud.common.profile.client_profile import ClientProfile
+from tencentcloud.common.profile.http_profile import HttpProfile
+from tencentcloud.common.exception.tencent_cloud_sdk_exception import TencentCloudSDKException
+from tencentcloud.dnspod.v20210323 import dnspod_client, models
 
-pv = "python2"
-if sys.version_info[0] < 3:
-    from urllib import quote
-    from urllib import urlencode
-else:
-    from urllib.parse import quote
-    from urllib.parse import urlencode
-    from urllib import request
-    pv = "python3"
 
 class Client(object):
-    def __init__(self, secret_id, secret_key, host, uri, **params):
-        self.secret_id = secret_id
-        self.secret_key = secret_key
-        self.host = host
-        self.uri = uri
-        self.params = params
+    @staticmethod
+    def getDomain(secret_id, secret_key, domain):
+        try:
+            cred = credential.Credential(secret_id, secret_key)
+            # 实例化一个http选项，可选的，没有特殊需求可以跳过
+            httpProfile = HttpProfile()
+            httpProfile.endpoint = "dnspod.tencentcloudapi.com"
 
-    def public_params(self):
-        params = {
-            'Nonce': random.randint(1, 9999),
-            'SecretId': self.secret_id,
-            'SignatureMethod': 'HmacSHA1',
-            'Timestamp': int(time.time()),
-        }
-        params.update(self.params)
+            # 实例化一个client选项，可选的，没有特殊需求可以跳过
+            clientProfile = ClientProfile()
+            clientProfile.httpProfile = httpProfile
+            # 实例化要请求产品的client对象,clientProfile是可选的
+            client = dnspod_client.DnspodClient(cred, "", clientProfile)
 
-        return params
+            # 实例化一个请求对象,每个接口都会对应一个request对象
 
-    def sign(self, params, method='GET'):
-        params = params.copy()
-        params.update(self.public_params())
-        p = {}
-        for k in params:
-            if method == 'POST' and str(params[k])[0:1] == '@':
-                continue
-            p[k.replace('_', '.')] = params[k]
-        ps = '&'.join('%s=%s' % (k, p[k]) for k in sorted(p))
+            req = models.DescribeRecordListRequest()
+            params = {
+                'Domain': domain
+            }
+            req.from_json_string(json.dumps(params))
 
-        msg = '%s%s%s?%s' % (method.upper(), self.host, self.uri, ps)
+            # 返回的resp是一个DescribeRegionsResponse的实例，与请求对象对应
+            resp = client.DescribeRecordList(req)
+            # 输出json格式的字符串回包
+            # print(resp.to_json_string())
 
-        if pv == "python2":
-            h = hmac.new(self.secret_key, msg, digestmod=hashlib.sha1)
-            signature = base64.encodestring(h.digest()).strip()
-        else:
-            h = hmac.new(self.secret_key.encode('utf-8'),
-                         msg.encode('utf-8'), digestmod=hashlib.sha1)
-            signature = base64.encodebytes(h.digest()).strip()
+        except TencentCloudSDKException as err:
+            print(err)
 
-        '''
-        hashed = hmac.new(self.secret_key, msg, hashlib.sha1)
-        base64 = binascii.b2a_base64(hashed.digest())[:-1]
-        '''
-        params['Signature'] = signature
-        return params
-
-    def send(self, params, method='GET'):
-        params = self.sign(params, method)
-        req_host = 'https://{}{}'.format(self.host, self.uri)
-        url = req_host + "?" + urlencode(params)
-
-        if pv == "python2":
-            f = urllib.urlopen(url)
-            result = f.read().decode('utf-8')
-            return json.loads(result)
-        else:
-            req = request.Request(url)
-            with request.urlopen(req) as f:
-                result = f.read().decode('utf-8')
-                return json.loads(result)
 
 class Cns:
     def __init__(self, secret_id, secret_key):
-        host, uri = 'cns.api.qcloud.com', '/v2/index.php'
-        self.client = Client(secret_id, secret_key, host, uri)
+        self.secret_id = secret_id
+        self.secret_key = secret_key
+        cred = credential.Credential(self.secret_id, self.secret_key)
+        # 实例化一个http选项，可选的，没有特殊需求可以跳过
+        httpProfile = HttpProfile()
+        httpProfile.endpoint = "dnspod.tencentcloudapi.com"
+
+        # 实例化一个client选项，可选的，没有特殊需求可以跳过
+        clientProfile = ClientProfile()
+        clientProfile.httpProfile = httpProfile
+        # 实例化要请求产品的client对象,clientProfile是可选的
+        self.client = dnspod_client.DnspodClient(cred, "", clientProfile)
 
     def list(self, domain, subDomain):
-        body = {
-            'Action': 'RecordList',
-            'domain': domain,
-            'subDomain': subDomain
-        }
+        try:
 
-        return self.client.send(body)
+            # 实例化一个请求对象,每个接口都会对应一个request对象
+
+            req = models.DescribeRecordListRequest()
+            params = {
+                'Domain': domain,
+                'SubDomain' : subDomain,
+                'RecordType' : 'TXT'
+            }
+            req.from_json_string(json.dumps(params))
+
+            # 返回的resp是一个DescribeRegionsResponse的实例，与请求对象对应
+            resp = self.client.DescribeRecordList(req)
+            # 输出json格式的字符串回包
+            # print(resp.to_json_string())
+            return resp
+
+        except TencentCloudSDKException as err:
+            print(err)
+
+        return
 
     @staticmethod
     def getDomain(domain):
         domain_parts = domain.split('.')
- 
+
         if len(domain_parts) > 2:
-            dirpath = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
+            dirpath = os.path.dirname(
+                os.path.dirname(os.path.realpath(__file__)))
             domainfile = dirpath + "/domain.ini"
             domainarr = []
             with open(domainfile) as f:
@@ -107,30 +94,53 @@ class Cns:
                     val = line.strip()
                     domainarr.append(val)
 
-            rootdomain = '.'.join(domain_parts[-(2 if domain_parts[-1] in domainarr else 3): ])
+            rootdomain = '.'.join(
+                domain_parts[-(2 if domain_parts[-1] in domainarr else 3):])
             selfdomain = domain.split(rootdomain)[0]
             return (selfdomain[0:len(selfdomain)-1], rootdomain)
         return ("", domain)
 
     def create(self, domain, name, _type, value):
-        body = {
-            'Action': 'RecordCreate',
-            'domain': domain,
-            'subDomain': name,
-            'recordType': _type,
-            'recordLine': '默认',
-            'value': value
-        }
-        return self.client.send(body)
+        try:
+            req = models.CreateRecordRequest()
+            params = {
+                'Action': 'RecordCreate',
+                'Domain': domain,
+                'SubDomain': name,
+                'RecordType': _type,
+                'RecordLine': '默认',
+                'Value': value
+            }
+            req.from_json_string(json.dumps(params))
+
+            # 返回的resp是一个CreateRecordResponse的实例，与请求对象对应
+            resp = self.client.CreateRecord(req)
+            # 输出json格式的字符串回包
+            #print(resp.to_json_string())
+            return resp
+
+        except TencentCloudSDKException as err:
+            print(err)
 
     def delete(self, domain, _id):
-        body = {
-            'Action': 'RecordDelete',
-            'domain': domain,
-            'recordId': _id
-        }
+        try:
+            # 实例化一个请求对象,每个接口都会对应一个request对象
+            req = models.DeleteRecordRequest()
+            params = {
+                'Domain': domain,
+                'RecordId': _id
+            }
+            req.from_json_string(json.dumps(params))
 
-        return self.client.send(body)
+            # 返回的resp是一个DeleteRecordResponse的实例，与请求对象对应
+            resp = self.client.DeleteRecord(req)
+            # 输出json格式的字符串回包
+            #print(resp.to_json_string())
+            return resp
+
+        except TencentCloudSDKException as err:
+            print(err)
+        return
 
 
 if __name__ == '__main__':
@@ -148,7 +158,8 @@ if __name__ == '__main__':
     if option == 'add':
         result = (cns.create(domain[1], selfdomain, 'TXT', value))
     elif option == 'clean':
-        for record in cns.list(domain[1], selfdomain)['data']['records']:
-            #print (record['name'],record['id'] )
-            result = (cns.delete(domain[1], record['id']))
-	    #print (result["message"])
+        list = cns.list(domain[1], selfdomain)
+        for record in list.RecordList:
+            #print (record.Name,record.RecordId)
+            result = cns.delete(domain[1], record.RecordId)
+            #print (result)
